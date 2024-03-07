@@ -3,3 +3,8 @@ spring:
     url:
     username:
     password:
+  jpa:
+    hibernate:
+      ddl-auto:
+  liquibase:
+    change-log:
