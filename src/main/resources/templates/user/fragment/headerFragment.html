@@ -6,6 +6,7 @@
 </head>
 <body>
 <div th:fragment="userInfo">
+
     <header class="header-style1 border-bottom border-color-light-white menu_area-light">
 
         <div class="navbar-default">
@@ -18,7 +19,8 @@
                                 <span class="input-group-addon cursor-pointer">
                                     <button class="search-form_submit fas fa-search text-white" type="submit"></button>
                                 </span>
-                            <input type="text" class="search-form_input form-control" name="s" autocomplete="off" placeholder="Type & hit enter...">
+                            <input type="text" class="search-form_input form-control" name="s" autocomplete="off"
+                                   placeholder="Type & hit enter...">
                             <span class="input-group-addon close-search mt-1"><i class="fas fa-times"></i></span>
                         </div>
                     </form>
@@ -33,7 +35,9 @@
 
                                 <div class="navbar-header navbar-header-custom">
                                     <!-- start logo -->
-                                    <a href="index.html" class="navbar-brand"><img id="logo" src="img/logos/logo-inner.png" alt="logo"></a>
+                                    <a href="/" class="navbar-brand"><img id="logo"
+                                                                                   src="/img/logos/logo-inner.png"
+                                                                                   alt="logo"></a>
                                     <!-- end logo -->
                                 </div>
 
@@ -41,38 +45,43 @@
 
                                 <!-- menu area -->
                                 <ul class="navbar-nav mx-auto" id="nav" style="display: none;">
-                                    <li><a href="index.html">Home</a></li>
+                                    <li><a href="/">Home</a></li>
                                     <li>
-                                        <a href="#!">History</a>
+                                        <a href="" th:if="${currentUser!=null}">History</a>
                                     </li>
-                                    <li><a href="#!">Repay</a>
+                                    <li><a href="" th:if="${currentUser!=null}">Repay</a>
 
                                     </li>
-                                    <li><a href="#!">transfer</a>
+                                    <li><a href="" th:if="${currentUser!=null}">transfer</a>
                                     </li>
                                     <li>
-                                        <a href="#!">account</a>
+                                        <a href="/">account</a>
                                         <ul>
-                                            <li><a href="/user/register">register</a></li>
-                                            <li><a href="/user/login">login</a></li>
-                                            <li><a href="blog-list.html">profile</a></li>
-                                            <li><a href="blog-list.html">logout</a></li>
+                                            <li><a th:if="${currentUser==null}" href="/user/register">register</a></li>
+                                            <li><a th:if="${currentUser==null}" href="/user/login">login</a></li>
+                                            <li><a th:if="${currentUser!=null}" href="blog-list.html">profile</a></li>
+                                            <li><a th:if="${currentUser!=null}" href="/logout">logout</a></li>
                                         </ul>
                                     </li>
                                     <li>
-                                        <a href="contact.html">Notification </a></li>
+                                        <a th:if="${currentUser!=null}" href="contact.html">Notification </a></li>
                                     <div class="card card-style3">
-                                        <span>1</span>
+                                        <span th:if="${currentUser!=null}">1</span>
                                     </div>
                                 </ul>
                                 <!-- end menu area -->
 
                                 <!-- start attribute navigation -->
-                                <div class="attr-nav">
+                                <div th:if="${currentUser!=null}" class="attr-nav">
                                     <ul>
-                                        <li class="d-none d-lg-inline-block"><a href="#!" class="butn small">your balance:486$</a></li>
+                                        <li class="d-none d-lg-inline-block"><a href="/balance"
+                                                th:text="${'Your Balcnce | '+currentUserCard.getBalance()+' '+currentUserCard.getMoneyType().name()}"
+                                                class="butn small">
+                                        </a></li>
                                     </ul>
+
                                 </div>
+
                                 <!-- end attribute navigation -->
 
                             </nav>
