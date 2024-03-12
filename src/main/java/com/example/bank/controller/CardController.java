@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -35,20 +37,24 @@ public class CardController {
         if (status == false) {
             return "redirect:/balance?msg=Size money is minus";
         }
-        log.info("{} money added  her card {} | {}",springUser.getUser().getName(),add,moneyType.name());
+        log.warn("Failed to add {} {} to {}'s card due to insufficient balance at {}", add, moneyType, springUser.getUser().getName(), LocalDateTime.now());
         return "redirect:/balance";
     }
 
     @PostMapping("/balance/withdraw")
     public String withdrawMoney(@RequestParam("size") double size,
                                 @AuthenticationPrincipal SpringUser springUser) {
-        boolean status = cardService.withdrawMoney(size, springUser.getUser());
-        if (status == false) {
-            log.warn("{} tried to withdraw money {} but failed",springUser.getUser().getName(),size);
-
-            return "redirect:/balance?msg=There is not enough money on the card that you want to withdraw";
+        boolean success = cardService.withdrawMoney(size, springUser.getUser());
+        if (success) {
+            logTransaction(springUser.getUser().getName(), "withdrawn", size, null);
+        } else {
+            log.warn("Failed to withdraw {} from {}'s card due to insufficient balance at {}", size, springUser.getUser().getName(), LocalDateTime.now());
+            return "redirect:/balance?msg=Insufficient balance to withdraw money";
         }
-        log.info("{} money withdraw  her card {}",springUser.getUser().getName(),size);
         return "redirect:/balance";
+    }
+    private void logTransaction(String username, String action, double amount, MoneyType moneyType) {
+        String transactionType = (moneyType != null) ? moneyType.name() : "";
+        log.info("{} {} {} {} from their card at {}", username, action, amount, transactionType, LocalDateTime.now());
     }
 }
