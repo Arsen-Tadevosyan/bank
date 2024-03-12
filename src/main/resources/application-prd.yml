@@ -8,3 +8,11 @@ spring:
       ddl-auto:
   liquibase:
     change-log:
+logging:
+  level:
+    root:
+  file:
+    name:
+  logback:
+    rollingpolicy:
+      max-file-size:

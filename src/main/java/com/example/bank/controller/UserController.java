@@ -49,7 +49,6 @@ public class UserController {
     public String loginSuccess(@AuthenticationPrincipal SpringUser springUser){
         User user = springUser.getUser();
         if (user.getUserRole() == UserRole.USER){
-            System.out.println("xz");
             return "redirect:/";
         }
         //AdminPage
