@@ -2,7 +2,7 @@ package com.example.bank.controller;
 
 import com.example.bank.entity.Card;
 import com.example.bank.repositories.CardRepository;
-import com.example.bank.security.SpringUser;
+import com.example.bank.security.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,10 +14,10 @@ public class CardControllerAdvice {
 
     private final CardRepository cardRepository;
 
-    @ModelAttribute("currentUserCard")
-    public Card currentUser(@AuthenticationPrincipal SpringUser springUser) {
-        if (springUser != null) {
-            Card card = cardRepository.findByUser(springUser.getUser());
+    @ModelAttribute("currentCard")
+    public Card currentUser(@AuthenticationPrincipal CurrentUser currentUser) {
+        if (currentUser != null) {
+            Card card = cardRepository.findByUser(currentUser.getUser());
             return card;
         }
         return null;

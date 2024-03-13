@@ -52,7 +52,7 @@
                                     <li><a href="" th:if="${currentUser!=null}">Repay</a>
 
                                     </li>
-                                    <li><a href="" th:if="${currentUser!=null}">transfer</a>
+                                    <li><a href="/transaction/transfer" th:if="${currentUser!=null}">transfer</a>
                                     </li>
                                     <li>
                                         <a href="/">account</a>
@@ -75,7 +75,7 @@
                                 <div th:if="${currentUser!=null}" class="attr-nav">
                                     <ul>
                                         <li class="d-none d-lg-inline-block"><a href="/balance"
-                                                th:text="${'Your Balcnce | '+currentUserCard.getBalance()+' '+currentUserCard.getMoneyType().name()}"
+                                                th:text="${'Your Balcnce | '+currentCard.getBalance()+' '+currentCard.getMoneyType().name()}"
                                                 class="butn small">
                                         </a></li>
                                     </ul>

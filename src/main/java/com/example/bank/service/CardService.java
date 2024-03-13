@@ -12,7 +12,9 @@ public interface CardService {
 
     Card gatByUser(User user);
 
-    double countCurrency(double size,MoneyType moneyType,MoneyType cardMoneyType);
+    boolean withdrawMoney(double size, User user);
 
-    boolean withdrawMoney(double size,User user);
+    Card findByNumber(String number);
+
+    boolean transfer(double size, String cardNumber, User currentUser);
 }
