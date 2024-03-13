@@ -29,8 +29,8 @@ public class TransactionController {
     @PostMapping("/transaction/transfer")
     public String transferMoney(@RequestParam("size") double size,
                                 @RequestParam("cardNumber") String cardNumber,
-                                @AuthenticationPrincipal SpringUser springUser) {
-        boolean status = cardService.transfer(size, cardNumber, springUser);
+                                @AuthenticationPrincipal SpringUser currentUser) {
+        boolean status = cardService.transfer(size, cardNumber, currentUser);
         if (status == false) {
             log.warn("Not enough money on the card for transfer. Card Number: {}", cardNumber);
             return "redirect:/transaction/transfer?msg=There is not enough money on your card or card dose not exist";

@@ -32,23 +32,23 @@ public class CardController {
     @PostMapping("/balance/add")
     public String balanceAdd(@RequestParam("sizeAdd") double add,
                              @RequestParam("moneyType") MoneyType moneyType,
-                             @AuthenticationPrincipal SpringUser springUser) {
-        boolean status = cardService.addMoney(add, moneyType, springUser.getUser());
+                             @AuthenticationPrincipal SpringUser currentUser) {
+        boolean status = cardService.addMoney(add, moneyType, currentUser.getUser());
         if (status == false) {
             return "redirect:/balance?msg=Size money is minus";
         }
-        log.warn("Failed to add {} {} to {}'s card due to insufficient balance at {}", add, moneyType, springUser.getUser().getName(), LocalDateTime.now());
+        log.warn("Failed to add {} {} to {}'s card due to insufficient balance at {}", add, moneyType, currentUser.getUser().getName(), LocalDateTime.now());
         return "redirect:/balance";
     }
 
     @PostMapping("/balance/withdraw")
     public String withdrawMoney(@RequestParam("size") double size,
-                                @AuthenticationPrincipal SpringUser springUser) {
-        boolean success = cardService.withdrawMoney(size, springUser.getUser());
+                                @AuthenticationPrincipal SpringUser currentUser) {
+        boolean success = cardService.withdrawMoney(size, currentUser.getUser());
         if (success) {
-            logTransaction(springUser.getUser().getName(), "withdrawn", size, null);
+            logTransaction(currentUser.getUser().getName(), "withdrawn", size, null);
         } else {
-            log.warn("Failed to withdraw {} from {}'s card due to insufficient balance at {}", size, springUser.getUser().getName(), LocalDateTime.now());
+            log.warn("Failed to withdraw {} from {}'s card due to insufficient balance at {}", size, currentUser.getUser().getName(), LocalDateTime.now());
             return "redirect:/balance?msg=Insufficient balance to withdraw money";
         }
         return "redirect:/balance";

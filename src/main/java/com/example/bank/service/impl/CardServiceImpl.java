@@ -61,12 +61,12 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public boolean transfer(double size, String cardNumber, SpringUser springUser) {
+    public boolean transfer(double size, String cardNumber, SpringUser currentUser) {
         Card toCard = findByNumber(cardNumber);
         if (toCard == null) {
             return false;
         }
-        Card fromCard = gatByUser(springUser.getUser());
+        Card fromCard = gatByUser(currentUser.getUser());
         double fromBalance = fromCard.getBalance();
         double toBalance = toCard.getBalance();
         if (fromBalance < size) {

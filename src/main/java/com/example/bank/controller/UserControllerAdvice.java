@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class UserControllerAdvice {
 
     @ModelAttribute("currentUser")
-    public User currentUser(@AuthenticationPrincipal SpringUser springUser) {
-        if (springUser != null) {
-            return springUser.getUser();
+    public User currentUser(@AuthenticationPrincipal SpringUser currentUser) {
+        if (currentUser != null) {
+            return currentUser.getUser();
         }
         return null;
     }

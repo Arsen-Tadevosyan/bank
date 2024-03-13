@@ -17,5 +17,5 @@ public interface CardService {
 
     Card findByNumber(String number);
 
-    boolean transfer(double size, String cardNumber, SpringUser springUser);
+    boolean transfer(double size, String cardNumber, SpringUser currentUser);
 }

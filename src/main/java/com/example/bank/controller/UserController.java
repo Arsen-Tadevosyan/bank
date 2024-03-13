@@ -46,8 +46,8 @@ public class UserController {
     }
 
     @GetMapping("/loginSuccessUrl")
-    public String loginSuccess(@AuthenticationPrincipal SpringUser springUser){
-        User user = springUser.getUser();
+    public String loginSuccess(@AuthenticationPrincipal SpringUser currentUser){
+        User user = currentUser.getUser();
         if (user.getUserRole() == UserRole.USER){
             return "redirect:/";
         }

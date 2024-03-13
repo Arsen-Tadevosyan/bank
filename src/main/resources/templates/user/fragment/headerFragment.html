@@ -75,7 +75,7 @@
                                 <div th:if="${currentUser!=null}" class="attr-nav">
                                     <ul>
                                         <li class="d-none d-lg-inline-block"><a href="/balance"
-                                                th:text="${'Your Balcnce | '+currentUserCard.getBalance()+' '+currentUserCard.getMoneyType().name()}"
+                                                th:text="${'Your Balcnce | '+currentCard.getBalance()+' '+currentCard.getMoneyType().name()}"
                                                 class="butn small">
                                         </a></li>
                                     </ul>
