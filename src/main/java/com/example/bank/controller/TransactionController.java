@@ -1,6 +1,6 @@
 package com.example.bank.controller;
 
-import com.example.bank.security.SpringUser;
+import com.example.bank.security.CurrentUser;
 import com.example.bank.service.CardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +29,8 @@ public class TransactionController {
     @PostMapping("/transaction/transfer")
     public String transferMoney(@RequestParam("size") double size,
                                 @RequestParam("cardNumber") String cardNumber,
-                                @AuthenticationPrincipal SpringUser currentUser) {
-        boolean status = cardService.transfer(size, cardNumber, currentUser);
+                                @AuthenticationPrincipal CurrentUser currentUser) {
+        boolean status = cardService.transfer(size, cardNumber, currentUser.getUser());
         if (status == false) {
             log.warn("Not enough money on the card for transfer. Card Number: {}", cardNumber);
             return "redirect:/transaction/transfer?msg=There is not enough money on your card or card dose not exist";

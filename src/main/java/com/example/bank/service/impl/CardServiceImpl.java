@@ -1,14 +1,17 @@
 package com.example.bank.service.impl;
 
 import com.example.bank.entity.Card;
+import com.example.bank.entity.Transfer;
 import com.example.bank.entity.User;
 import com.example.bank.entity.enums.MoneyType;
 import com.example.bank.repositories.CardRepository;
-import com.example.bank.security.SpringUser;
 import com.example.bank.service.CardService;
+import com.example.bank.service.TransferService;
 import com.example.bank.util.CountCurrency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +19,7 @@ public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
     private final CountCurrency countCurrency;
+    private final TransferService transferService;
 
 
     @Override
@@ -61,12 +65,12 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public boolean transfer(double size, String cardNumber, SpringUser currentUser) {
+    public boolean transfer(double size, String cardNumber, User currentUser) {
         Card toCard = findByNumber(cardNumber);
         if (toCard == null) {
             return false;
         }
-        Card fromCard = gatByUser(currentUser.getUser());
+        Card fromCard = gatByUser(currentUser);
         double fromBalance = fromCard.getBalance();
         double toBalance = toCard.getBalance();
         if (fromBalance < size) {
@@ -77,6 +81,13 @@ public class CardServiceImpl implements CardService {
         toCard.setBalance(toBalance + value);
         cardRepository.save(fromCard);
         cardRepository.save(toCard);
+        transferService.save(Transfer.builder()
+                .size(size)
+                .from(fromCard.getUser())
+                .to(toCard.getUser())
+                .moneyType(fromCard.getMoneyType())
+                .dateDispatch(LocalDateTime.now())
+                .build());
         return true;
     }
 

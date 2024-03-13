@@ -27,6 +27,6 @@ public class UserDetailService implements UserDetailsService {
             throw new UsernameNotFoundException("user with " + username + " dose not exists");
         }
 
-        return new SpringUser(byEmail.get());
+        return new CurrentUser(byEmail.get());
     }
 }

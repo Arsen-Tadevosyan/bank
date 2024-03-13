@@ -1,7 +1,7 @@
 package com.example.bank.controller;
 
 import com.example.bank.entity.enums.MoneyType;
-import com.example.bank.security.SpringUser;
+import com.example.bank.security.CurrentUser;
 import com.example.bank.service.CardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class CardController {
     @PostMapping("/balance/add")
     public String balanceAdd(@RequestParam("sizeAdd") double add,
                              @RequestParam("moneyType") MoneyType moneyType,
-                             @AuthenticationPrincipal SpringUser currentUser) {
+                             @AuthenticationPrincipal CurrentUser currentUser) {
         boolean status = cardService.addMoney(add, moneyType, currentUser.getUser());
         if (status == false) {
             return "redirect:/balance?msg=Size money is minus";
@@ -43,7 +43,7 @@ public class CardController {
 
     @PostMapping("/balance/withdraw")
     public String withdrawMoney(@RequestParam("size") double size,
-                                @AuthenticationPrincipal SpringUser currentUser) {
+                                @AuthenticationPrincipal CurrentUser currentUser) {
         boolean success = cardService.withdrawMoney(size, currentUser.getUser());
         if (success) {
             logTransaction(currentUser.getUser().getName(), "withdrawn", size, null);

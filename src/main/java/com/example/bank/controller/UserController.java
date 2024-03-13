@@ -3,20 +3,15 @@ package com.example.bank.controller;
 import com.example.bank.entity.User;
 import com.example.bank.entity.enums.MoneyType;
 import com.example.bank.entity.enums.UserRole;
-import com.example.bank.repositories.UserRepository;
-import com.example.bank.security.SpringUser;
+import com.example.bank.security.CurrentUser;
 import com.example.bank.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/loginSuccessUrl")
-    public String loginSuccess(@AuthenticationPrincipal SpringUser currentUser){
+    public String loginSuccess(@AuthenticationPrincipal CurrentUser currentUser){
         User user = currentUser.getUser();
         if (user.getUserRole() == UserRole.USER){
             return "redirect:/";

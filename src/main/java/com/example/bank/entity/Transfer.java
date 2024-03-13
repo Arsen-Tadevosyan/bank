@@ -2,13 +2,21 @@ package com.example.bank.entity;
 
 import com.example.bank.entity.enums.MoneyType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "transfer")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Transfer {
 
     @Id
@@ -26,5 +34,5 @@ public class Transfer {
     @Enumerated(EnumType.STRING)
     private MoneyType moneyType;
 
-    private Date dateDispatch;
+    private LocalDateTime dateDispatch;
 }

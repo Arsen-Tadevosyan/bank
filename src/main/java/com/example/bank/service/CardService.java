@@ -3,7 +3,6 @@ package com.example.bank.service;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.User;
 import com.example.bank.entity.enums.MoneyType;
-import com.example.bank.security.SpringUser;
 
 public interface CardService {
 
@@ -17,5 +16,5 @@ public interface CardService {
 
     Card findByNumber(String number);
 
-    boolean transfer(double size, String cardNumber, SpringUser currentUser);
+    boolean transfer(double size, String cardNumber, User currentUser);
 }

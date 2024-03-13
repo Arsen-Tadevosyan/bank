@@ -2,7 +2,7 @@ package com.example.bank.controller;
 
 
 import com.example.bank.entity.User;
-import com.example.bank.security.SpringUser;
+import com.example.bank.security.CurrentUser;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class UserControllerAdvice {
 
     @ModelAttribute("currentUser")
-    public User currentUser(@AuthenticationPrincipal SpringUser currentUser) {
+    public User currentUser(@AuthenticationPrincipal CurrentUser currentUser) {
         if (currentUser != null) {
             return currentUser.getUser();
         }
