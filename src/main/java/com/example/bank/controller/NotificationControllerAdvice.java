@@ -16,7 +16,7 @@ public class NotificationControllerAdvice {
     @ModelAttribute("notificationByUser")
     public int currentUser(@AuthenticationPrincipal CurrentUser user) {
         if (user != null) {
-            return notificationService.countByUserAndIsDelete(user.getUser(),false);
+            return notificationService.countByUserAndIsDelete(user.getUser(), false);
         }
         return 0;
     }

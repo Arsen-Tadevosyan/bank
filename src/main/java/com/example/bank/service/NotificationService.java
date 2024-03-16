@@ -8,6 +8,7 @@ import java.util.List;
 public interface NotificationService {
 
     List<Notification> findByUser(User user);
+
     Notification findById(int id);
 
     int countByUser(User user);
@@ -16,5 +17,5 @@ public interface NotificationService {
 
     List<Notification> findByUserAndIsDelete(User user, boolean isDelete);
 
-    int countByUserAndIsDelete(User user,boolean isDelete);
+    int countByUserAndIsDelete(User user, boolean isDelete);
 }
