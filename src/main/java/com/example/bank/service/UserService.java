@@ -15,4 +15,6 @@ public interface UserService {
     Optional<User> findByEmail(String email);
 
     User register(User user, MoneyType moneyType);
+
+    User findById(int id);
 }
