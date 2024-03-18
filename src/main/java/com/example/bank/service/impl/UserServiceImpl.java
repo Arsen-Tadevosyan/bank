@@ -54,4 +54,9 @@ public class UserServiceImpl implements UserService {
         cardService.save(card);
         return saveUser;
     }
+
+    @Override
+    public User findById(int id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }
