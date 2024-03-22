@@ -4,13 +4,19 @@ import com.example.bank.entity.enums.MoneyType;
 import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.TransactionType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "transaction")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Transaction {
 
     @Id
@@ -24,9 +30,11 @@ public class Transaction {
 
     private double percentage;
 
-    private Date issueDate;
+    private LocalDate issueDate;
 
-    private Date finishDate;
+    private int months;
+
+    private LocalDate finishDate;
 
     private double remainingMoney;
 

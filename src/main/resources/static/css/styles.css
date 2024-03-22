@@ -29,3 +29,85 @@
     border-radius: 10px;
     text-decoration: none;
 }
+
+.transaction-form, .contract-clauses {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 400px;
+}
+
+.transaction-form h2, .contract-clauses h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+.manual-money, .contract-clauses {
+    border: 1px solid #ccc;
+}
+
+.manual-money {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+    display: flex;
+    align-items: center;
+}
+
+.manual-money label {
+    margin-right: 10px;
+    color: #555;
+}
+
+.manual-money input[type="text"] {
+    flex: 1;
+}
+
+.contract-clauses {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.contract-clauses p {
+    margin-bottom: 10px;
+    color: #555;
+}
+
+
+
+.interest-rate {
+    background-color: #f7f7f7;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.interest-rate h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.interest-rate p {
+    margin: 0;
+    color: #555;
+}
