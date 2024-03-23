@@ -17,7 +17,7 @@ public class RepayServiceImpl implements RepayService {
 
     @Override
     public void save(Transaction transaction) {
-        double repaySize = transaction.getSize() / transaction.getMonths();
+        double repaySize = transaction.getRemainingMoney() / transaction.getMonths();
         for (int i = 0; i < transaction.getMonths(); i++) {
             LocalDate payDay = transaction.getIssueDate().plusMonths(1);
             repayRepository.save(Repay.builder()
