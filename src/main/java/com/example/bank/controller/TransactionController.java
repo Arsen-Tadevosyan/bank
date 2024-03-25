@@ -2,6 +2,7 @@ package com.example.bank.controller;
 
 import com.example.bank.entity.Transaction;
 import com.example.bank.entity.User;
+import com.example.bank.entity.enums.TransactionType;
 import com.example.bank.security.CurrentUser;
 import com.example.bank.service.CardService;
 import com.example.bank.service.NotificationService;
@@ -82,7 +83,7 @@ public class TransactionController {
         if (user.getRating() == 0) {
             return "redirect:/transaction/personalCredit?msg=Your request was declined due to your credit history";
         }
-        Transaction transaction = transactionService.saveForPersonal(size, mounts, user);
+        Transaction transaction = transactionService.save(size, mounts, user, TransactionType.PERSONAl);
         if (transaction == null) {
             return "redirect:/transaction/personalCredit?msg=Your request was declined";
         }
@@ -105,7 +106,7 @@ public class TransactionController {
         if (user.getRating() == 0) {
             return "redirect:/transaction/personalCredit?msg=Your request was declined due to your credit history";
         }
-        Transaction transaction = transactionService.saveForEducation(size, mounts, user);
+        Transaction transaction = transactionService.save(size, mounts, user, TransactionType.EDUCATION);
         if (transaction == null) {
             return "redirect:/transaction/personalCredit?msg=Your request was declined";
         }
@@ -128,7 +129,7 @@ public class TransactionController {
         if (user.getRating() == 0) {
             return "redirect:/transaction/personalCredit?msg=Your request was declined due to your credit history";
         }
-        Transaction transaction = transactionService.saveForBusiness(size, mounts, user);
+        Transaction transaction = transactionService.save(size, mounts, user, TransactionType.BUSINESS);
         if (transaction == null) {
             return "redirect:/transaction/personalCredit?msg=Your request was declined";
         }
