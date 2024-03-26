@@ -3,14 +3,27 @@ package com.example.bank.entity;
 import com.example.bank.entity.enums.MoneyType;
 import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.TransactionType;
-import jakarta.persistence.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "transaction")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Transaction {
 
     @Id
@@ -24,9 +37,11 @@ public class Transaction {
 
     private double percentage;
 
-    private Date issueDate;
+    private LocalDate issueDate;
 
-    private Date finishDate;
+    private int months;
+
+    private LocalDate finishDate;
 
     private double remainingMoney;
 

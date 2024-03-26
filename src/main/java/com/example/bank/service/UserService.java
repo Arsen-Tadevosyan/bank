@@ -1,7 +1,6 @@
 package com.example.bank.service;
 
 
-import com.example.bank.entity.Card;
 import com.example.bank.entity.User;
 import com.example.bank.entity.enums.MoneyType;
 import com.example.bank.entity.enums.UserRole;
@@ -10,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    List <User> findByUserRole(UserRole userRole);
+    List<User> findByUserRole(UserRole userRole);
 
     Optional<User> findByEmail(String email);
 
     User register(User user, MoneyType moneyType);
 
-    User findById(int id);
+    User save(User user);
 }
