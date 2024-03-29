@@ -12,7 +12,7 @@
     <meta name="description" content="Loan- Banking and Loan Responsive Template">
 
     <!-- title  -->
-    <title>Loan- Banking and Loan Responsive Template</title>
+    <title>Credit List</title>
 
     <!-- favicon -->
     <link rel="shortcut icon" href="img/logos/favicon.png">
@@ -54,10 +54,16 @@
              data-background="img/bg/page-title.jpg">
         <div class="container">
 
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>My Transactions</h1>
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <!-- ALERTS
+    <!-- TABLES
     ================================================== -->
     <section>
         <div class="container">
@@ -67,28 +73,45 @@
                     <div class="position-relative elements-block">
 
                         <div class="inner-title">
-                            <div class="main-title title-left mb-0">Notification
+                            <div class="main-title title-left mb-0">Transactions
                                 <span class="line-left"></span>
                             </div>
                         </div>
 
-                        <div th:each="notification : ${notifications}"
-                             th:if="${notification.notificationType == notification.notificationType.WARN}"
-                             class="alert alert-warning alert-dismissible">
-                            <strong>Warning!</strong> <span th:text="${notification.message}"></span>
-                            <a class="btn-close"
-                               th:href="@{'/notification/delete/'+${notification.id}}"></a>
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th>Percentage</th>
+                                    <th>Issue Date</th>
+                                    <th>Finish Date</th>
+                                    <th>Remaining</th>
+                                    <th>Months</th>
+                                    <th>Status</th>
+                                    <th>Single Page</th>
+                                </tr>
+                                </thead>
+                                <tbody th:each="transaction:${transactions}">
+                                <tr>
+                                    <td th:text="${transaction.id}"></td>
+                                    <td th:text="${transaction.transactionType.name()}"></td>
+                                    <td th:text="${transaction.size+'|'+transaction.moneyType.name()}"></td>
+                                    <td th:text="${transaction.percentage}"></td>
+                                    <td th:text="${transaction.issueDate}"></td>
+                                    <td th:text="${transaction.finishDate}"></td>
+                                    <td th:text="${transaction.remainingMoney}"></td>
+                                    <td th:text="${transaction.months}"></td>
+                                    <td th:text="${transaction.status.name()}"></td>
+                                    <td>
+                                        <a th:href="@{'/creditSinglePage/'+ ${transaction.id}}">Single Page</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
-
-                        <div th:each="notification : ${notifications}"
-                             th:if="${notification.notificationType == notification.notificationType.INFO}"
-                             class="alert alert-info alert-dismissible">
-                            <strong>Info!</strong> <span th:text="${notification.message}"></span>
-                            <a class="btn-close"
-                               th:href="@{'/notification/delete/'+${notification.id}}"></a>
-                        </div>
-
-
                     </div>
 
                 </div>

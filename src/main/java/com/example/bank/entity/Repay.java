@@ -1,18 +1,13 @@
 package com.example.bank.entity;
 
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.Data;
+import com.example.bank.entity.enums.StatusRepay;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "repay")
@@ -30,8 +25,12 @@ public class Repay {
 
     private LocalDate payDay;
 
-    private Date dueDate;
+    private LocalDate dueDate;
 
     @ManyToOne
     private Transaction transaction;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRepay status;
+
 }

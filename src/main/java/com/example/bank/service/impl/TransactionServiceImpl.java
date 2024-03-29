@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,31 +29,43 @@ public class TransactionServiceImpl implements TransactionService {
     private final NotificationService notificationService;
 
     @Override
+    public Transaction update(Transaction transaction) {
+        return transactionRepository.save(transaction);
+    }
+
+    @Override
     public Transaction save(double size, int mounts, User user, TransactionType transactionType) {
         double percent = 0;
+        List<Transaction> byUserAndStatus = transactionRepository.findByUserAndStatus(user, Status.DURING);
+        if (byUserAndStatus.size() > 7) {
+            return null;
+        }
         switch (transactionType) {
-            case PERSONAl:
+            case PERSONAL:
                 if (mounts < 12 || mounts > 60) {
-                    percent = 13;
                     return null;
+                } else {
+                    percent = 13;
                 }
                 break;
             case EDUCATION:
                 if (mounts < 36 || mounts > 96) {
-                    percent = 6;
                     return null;
+                } else {
+                    percent = 6;
                 }
                 break;
             case BUSINESS:
                 if (mounts < 36 || mounts > 120) {
-                    percent = 11;
                     return null;
+                } else {
+                    percent = 11;
                 }
                 break;
         }
-        LocalDate finishDate = null;
+        LocalDate finishDate = LocalDate.now();
         for (int i = 0; i < mounts; i++) {
-            finishDate = LocalDate.now().plusMonths(1);
+            finishDate = LocalDate.now().plusMonths(i + 1);
         }
         Card card = cardService.gatByUser(user);
         log.info("{} {} transaction has been confirmed", user.getName(), transactionType.name());
@@ -72,10 +85,25 @@ public class TransactionServiceImpl implements TransactionService {
                 .issueDate(LocalDate.now())
                 .months(mounts)
                 .finishDate(finishDate)
-                .remainingMoney(size / 100 * percent + size)
+                .remainingMoney(size + (size * percent / 100))
                 .status(Status.DURING)
-                .transactionType(TransactionType.PERSONAl)
+                .transactionType(transactionType)
                 .user(user)
                 .build());
+    }
+
+    @Override
+    public List<Transaction> findByUser(User user) {
+        return transactionRepository.findByUser(user);
+    }
+
+    @Override
+    public Transaction getById(int id) {
+        return transactionRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Transaction> findAll() {
+        return transactionRepository.findAll();
     }
 }

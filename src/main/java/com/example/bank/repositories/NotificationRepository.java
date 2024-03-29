@@ -12,6 +12,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
     List<Notification> findByUserAndIsDelete(User user, boolean isDeleted);
 
+    List<Notification> findByUserAndIsDeleteOrderByDateDispatchDesc(User user, boolean isDelete);
+
     int countByUser(User user);
 
     int countByUserAndIsDelete(User user, boolean isDelete);

@@ -38,11 +38,11 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<Notification> findByUserAndIsDelete(User user, boolean isDelete) {
-        return notificationRepository.findByUserAndIsDelete(user,isDelete);
+        return notificationRepository.findByUserAndIsDeleteOrderByDateDispatchDesc(user, isDelete);
     }
 
     @Override
     public int countByUserAndIsDelete(User user, boolean isDelete) {
-        return notificationRepository.countByUserAndIsDelete(user,isDelete);
+        return notificationRepository.countByUserAndIsDelete(user, isDelete);
     }
 }

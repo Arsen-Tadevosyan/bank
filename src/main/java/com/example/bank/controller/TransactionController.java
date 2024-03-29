@@ -1,5 +1,7 @@
 package com.example.bank.controller;
 
+import com.example.bank.entity.Card;
+import com.example.bank.entity.Repay;
 import com.example.bank.entity.Transaction;
 import com.example.bank.entity.User;
 import com.example.bank.entity.enums.TransactionType;
@@ -14,8 +16,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -83,7 +89,7 @@ public class TransactionController {
         if (user.getRating() == 0) {
             return "redirect:/transaction/personalCredit?msg=Your request was declined due to your credit history";
         }
-        Transaction transaction = transactionService.save(size, mounts, user, TransactionType.PERSONAl);
+        Transaction transaction = transactionService.save(size, mounts, user, TransactionType.PERSONAL);
         if (transaction == null) {
             return "redirect:/transaction/personalCredit?msg=Your request was declined";
         }
@@ -135,6 +141,50 @@ public class TransactionController {
         }
         repayService.save(transaction);
         return "redirect:/transaction/personalCredit?msg=Your transaction has been confirmed";
+    }
+
+    @GetMapping("/myCredits")
+    public String MyTransactions(@AuthenticationPrincipal CurrentUser currentUser,
+                                 ModelMap modelMap) {
+        List<Transaction> transactions = transactionService.findByUser(currentUser.getUser());
+        modelMap.addAttribute("transactions", transactions);
+        return "user/myCredits";
+    }
+
+    @GetMapping("creditSinglePage/{id}")
+    public String creditSinglePage(@PathVariable("id") int id,
+                                   ModelMap modelMap,
+                                   @RequestParam(value = "msg", required = false) String msg) {
+        if (msg != null) {
+            modelMap.addAttribute("msg", msg);
+        }
+        Transaction transaction = transactionService.getById(id);
+        List<Repay> repays = repayService.getByTransaction(transaction);
+        modelMap.addAttribute("transaction", transaction);
+        modelMap.addAttribute("repays", repays);
+        return "user/creditSinglePage";
+    }
+
+    @PostMapping("/repay")
+    public String Repay(@AuthenticationPrincipal CurrentUser currentUser,
+                        @RequestParam("repayId") int id) {
+        Optional<Repay> serviceById = repayService.getById(id);
+        Repay repay = null;
+        if (serviceById.isEmpty()) {
+            return "redirect:/myCredits/?msg=You don't have repay with id";
+        }
+        repay = serviceById.get();
+        if (!repay.getTransaction().getUser().equals(currentUser.getUser())) {
+            return "redirect:/myCredits/?msg=You don't have repay with id";
+        }
+        Card card = cardService.gatByUser(currentUser.getUser());
+        boolean status = repayService.repay(id, card);
+        log.info("");
+        if (!status) {
+            return "redirect:/creditSinglePage/" + repay.getTransaction().getId() + "?msg=your balance is insufficient or you have already paid with that ID";
+        }
+        log.info("");
+        return "redirect:/creditSinglePage/" + repay.getTransaction().getId();
     }
 
 }
