@@ -8,6 +8,8 @@ import com.example.bank.repositories.RepayRepository;
 import com.example.bank.service.CardService;
 import com.example.bank.service.RepayService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,8 +39,8 @@ public class RepayServiceImpl implements RepayService {
     }
 
     @Override
-    public List<Repay> getByTransaction(Transaction transaction) {
-        return repayRepository.findByTransaction(transaction);
+    public Page<Repay> getByTransaction(Transaction transaction, Pageable pageable) {
+        return repayRepository.findByTransaction(transaction,pageable);
     }
 
     @Override

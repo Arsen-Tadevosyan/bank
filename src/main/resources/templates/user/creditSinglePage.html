@@ -119,6 +119,13 @@
                     </tr>
                     </tbody>
                 </table>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li th:each="pageNumber : ${#numbers.sequence(0, repays.totalPages - 1)}" th:class="${pageNumber == repays.number} ? 'page-item active' : 'page-item'">
+                            <a class="page-link" th:href="@{'/creditSinglePage/' + ${transaction.id} + '?page=' + ${pageNumber} + '&size=' + ${repays.size}}" th:text="${pageNumber + 1}"></a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </section>

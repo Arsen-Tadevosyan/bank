@@ -13,6 +13,8 @@ import com.example.bank.service.NotificationService;
 import com.example.bank.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -93,8 +95,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> findByUser(User user) {
-        return transactionRepository.findByUser(user);
+    public Page<Transaction> findByUser(User user, Pageable pageable) {
+        return transactionRepository.findByUser(user,pageable);
     }
 
     @Override

@@ -12,6 +12,9 @@ import com.example.bank.service.RepayService;
 import com.example.bank.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -145,21 +150,34 @@ public class TransactionController {
 
     @GetMapping("/myCredits")
     public String MyTransactions(@AuthenticationPrincipal CurrentUser currentUser,
+                                 @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                 @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                  ModelMap modelMap) {
-        List<Transaction> transactions = transactionService.findByUser(currentUser.getUser());
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Transaction> transactions = transactionService.findByUser(currentUser.getUser(), pageable);
         modelMap.addAttribute("transactions", transactions);
+        int totalPages = transactions.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            modelMap.addAttribute("pageNumbers", pageNumbers);
+        }
         return "user/myCredits";
     }
 
     @GetMapping("creditSinglePage/{id}")
     public String creditSinglePage(@PathVariable("id") int id,
+                                   @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                   @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                    ModelMap modelMap,
                                    @RequestParam(value = "msg", required = false) String msg) {
+        Pageable pageable = PageRequest.of(page - 1, size);
         if (msg != null) {
             modelMap.addAttribute("msg", msg);
         }
         Transaction transaction = transactionService.getById(id);
-        List<Repay> repays = repayService.getByTransaction(transaction);
+        Page<Repay> repays = repayService.getByTransaction(transaction, pageable);
         modelMap.addAttribute("transaction", transaction);
         modelMap.addAttribute("repays", repays);
         return "user/creditSinglePage";
