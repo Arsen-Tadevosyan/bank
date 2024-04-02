@@ -21,16 +21,16 @@
     <link rel="apple-touch-icon" sizes="114x114" href="img/logos/apple-touch-icon-114x114.png">
 
     <!-- plugins -->
-    <link rel="stylesheet" href="css/plugins.css">
+    <link rel="stylesheet" href="/css/plugins.css">
 
     <!-- search css -->
-    <link rel="stylesheet" href="search/search.css">
+    <link rel="stylesheet" href="/search/search.css">
 
     <!-- quform css -->
-    <link rel="stylesheet" href="quform/css/base.css">
+    <link rel="stylesheet" href="/quform/css/base.css">
 
     <!-- theme core css -->
-    <link href="css/styles.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
 
 </head>
 
@@ -48,53 +48,88 @@
     ================================================== -->
     <th:block th:include="/user/fragment/headerFragment::userInfo"/>
 
-    <!-- PAGE TITLE
+    <!-- BANNER
     ================================================== -->
+    <!-- PAGE TITLE
+   ================================================== -->
     <section class="page-title-section top-position1 bg-img cover-background" data-overlay-dark="55"
              data-background="img/bg/page-title.jpg">
         <div class="container">
 
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Credit</h1>
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <!-- ALERTS
-    ================================================== -->
-    <section>
+    <section class="loan-app-form bg-img cover-background" data-background="img/bg/bg-03.jpg">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-9">
-
-                    <div class="position-relative elements-block">
-
-                        <div class="inner-title">
-                            <div class="main-title title-left mb-0">Notification
-                                <span class="line-left"></span>
-                            </div>
+            <div class="col-md-6">
+                <div class="mb-1-9">
+                    <h2 class="w-md-90"></h2>
+                    <div class="main-title title-left">Credit<span class="line-left"></span></div>
+                </div>
+            </div>
+            <div class="row calculator-loan">
+                <div class="col-md-6 form mb-1-6 mb-md-0">
+                    <span th:style="'color: red;'" th:if="${msg != null}" th:text="${msg}"></span>
+                    <form action="/repay" method="post">
+                        <div><p><input type="number" name="repayId">Repay ID</p></div>
+                        <div class="mb-4">
+                            <button type="submit" class="butn w-100">Repay</button>
                         </div>
-
-                        <div th:each="notification : ${notifications}"
-                             th:if="${notification.notificationType == notification.notificationType.WARN}"
-                             class="alert alert-warning alert-dismissible">
-                            <strong>Warning!</strong> <span th:text="${notification.message}"></span>
-                            <a class="btn-close"
-                               th:href="@{'/notification/delete/'+${notification.id}}"></a>
-                        </div>
-
-                        <div th:each="notification : ${notifications}"
-                             th:if="${notification.notificationType == notification.notificationType.INFO}"
-                             class="alert alert-info alert-dismissible">
-                            <strong>Info!</strong> <span th:text="${notification.message}"></span>
-                            <a class="btn-close"
-                               th:href="@{'/notification/delete/'+${notification.id}}"></a>
-                        </div>
-
-
-                    </div>
+                    </form>
 
                 </div>
+                <div class="col-md-6">
+                    <div class="ms-xl-5 p-4 p-xl-5 bg-primary text-white rounded">
+                        <label class="results-label">Credit Info:</label>
+                        <div class="results"><p><strong>Percentage:</strong><br th:text="${transaction.percentage+'%'}">
+                        </p>
+                            <p><strong>Size Money:</strong><br
+                                    th:text="${transaction.size+'|'+transaction.moneyType.name()}"></p>
+                            <p><strong>Remaining Money:</strong><br
+                                    th:text="${transaction.remainingMoney+'|'+transaction.moneyType.name()}"></p>
+                            <p><strong>Mounts:</strong><br th:text="${transaction.months}"></p>
+                            <p><strong>Issue/Finish Date:</strong><br
+                                    th:text="${transaction.issueDate+'|'+transaction.finishDate}"></p>
+                            <p><strong>Status:</strong><br th:text="${transaction.status.name()}"></p>
+                            <p><strong>Type:</strong><br th:text="${transaction.transactionType.name()}"></p>
+                        </div>
+                    </div>
+                </div>
+                <table class="table mb-0">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Size</th>
+                        <th>Pay Day</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="repay:${repays}">
+                        <td th:text="${repay.id}"></td>
+                        <td th:text="${repay.size}"></td>
+                        <td th:text="${repay.payDay}"></td>
+                        <td th:text="${repay.status.name()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li th:each="pageNumber : ${#numbers.sequence(0, repays.totalPages - 1)}" th:class="${pageNumber == repays.number} ? 'page-item active' : 'page-item'">
+                            <a class="page-link" th:href="@{'/creditSinglePage/' + ${transaction.id} + '?page=' + ${pageNumber} + '&size=' + ${repays.size}}" th:text="${pageNumber + 1}"></a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </section>
+
 
     <!-- FOOTER
     ================================================== -->
@@ -255,28 +290,28 @@
 <!-- all js include start -->
 
 <!-- jQuery -->
-<script src="js/jquery.min.js"></script>
+<script src="/js/jquery.min.js"></script>
 
 <!-- popper js -->
-<script src="js/popper.min.js"></script>
+<script src="/js/popper.min.js"></script>
 
 <!-- bootstrap -->
-<script src="js/bootstrap.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
 
 <!-- jquery -->
-<script src="js/core.min.js"></script>
+<script src="/js/core.min.js"></script>
 
 <!-- Search -->
-<script src="search/search.js"></script>
+<script src="/search/search.js"></script>
 
 <!-- custom scripts -->
-<script src="js/main.js"></script>
+<script src="/js/main.js"></script>
 
 <!-- form plugins js -->
-<script src="quform/js/plugins.js"></script>
+<script src="/quform/js/plugins.js"></script>
 
 <!-- form scripts js -->
-<script src="quform/js/scripts.js"></script>
+<script src="/quform/js/scripts.js"></script>
 
 <!-- all js include end -->
 </body>

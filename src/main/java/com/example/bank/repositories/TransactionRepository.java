@@ -1,7 +1,17 @@
 package com.example.bank.repositories;
 
 import com.example.bank.entity.Transaction;
+import com.example.bank.entity.User;
+import com.example.bank.entity.enums.Status;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TransactionRepository extends JpaRepository<Transaction,Integer> {
+import java.util.List;
+
+public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
+
+    Page<Transaction> findByUser(User user, Pageable pageable);
+
+    List<Transaction> findByUserAndStatus(User user, Status status);
 }

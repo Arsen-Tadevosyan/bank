@@ -36,8 +36,8 @@
                                 <div class="navbar-header navbar-header-custom">
                                     <!-- start logo -->
                                     <a href="/" class="navbar-brand"><img id="logo"
-                                                                                   src="/img/logos/logo-inner.png"
-                                                                                   alt="logo"></a>
+                                                                          src="/img/logos/logo-inner.png"
+                                                                          alt="logo"></a>
                                     <!-- end logo -->
                                 </div>
 
@@ -49,7 +49,7 @@
                                     <li>
                                         <a href="" th:if="${currentUser!=null}">History</a>
                                     </li>
-                                    <li><a href="" th:if="${currentUser!=null}">Repay</a>
+                                    <li><a href="/myCredits" th:if="${currentUser!=null}">My Credits</a>
 
                                     </li>
                                     <li><a href="/transaction/transfer" th:if="${currentUser!=null}">transfer</a>
@@ -75,8 +75,8 @@
                                 <div th:if="${currentUser!=null}" class="attr-nav">
                                     <ul>
                                         <li class="d-none d-lg-inline-block"><a href="/balance"
-                                                th:text="${'Your Balcnce | '+currentCard.getBalance()+' '+currentCard.getMoneyType().name()}"
-                                                class="butn small">
+                                                                                th:text="${'Your Balcnce | '+currentCard.getBalance()+' '+currentCard.getMoneyType().name()}"
+                                                                                class="butn small">
                                         </a></li>
                                     </ul>
 
