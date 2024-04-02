@@ -23,6 +23,8 @@
     <!-- plugins -->
     <link rel="stylesheet" href="/css/plugins.css">
 
+    <link rel="stylesheet" href="/css/style.css">
+
     <!-- search css -->
     <link rel="stylesheet" href="/search/search.css">
 
@@ -68,13 +70,16 @@
                         </div>
 
                         <form  action="/user/register" method="POST">
-                            <div >
+                            <span style="color: red;margin-left: 380px;font-size: 20px;"
+                                  th:if="${msg != null}" th:text="${msg}"></span>
+
+                            <div>
                                 <div class="row">
                                     <!-- Begin Text input element -->
                                     <div class="col-md-6">
                                         <div >
-                                            <label for="name">Your Name <span class="quform-required">*</span></label>
-                                            <div class="quform-input">
+                                            <label for="name">Your Name <span>*</span></label>
+                                            <div >
                                                 <input class="form-control" id="name" type="text" name="name" placeholder="Your name here" />
                                             </div>
                                         </div>
