@@ -59,7 +59,7 @@
                                         <ul>
                                             <li><a th:if="${currentUser==null}" href="/user/register">register</a></li>
                                             <li><a th:if="${currentUser==null}" href="/user/login">login</a></li>
-                                            <li><a th:if="${currentUser!=null}" href="blog-list.html">profile</a></li>
+                                            <li><a th:if="${currentUser!=null}" href="/user/profile">profile</a></li>
                                             <li><a th:if="${currentUser!=null}" href="/logout">logout</a></li>
                                         </ul>
                                     </li>

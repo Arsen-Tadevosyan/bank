@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 
     <!-- metas -->
@@ -12,7 +11,7 @@
     <meta name="description" content="Loan- Banking and Loan Responsive Template">
 
     <!-- title  -->
-    <title>Loan- Banking and Loan Responsive Template</title>
+    <title>Profile</title>
 
     <!-- favicon -->
     <link rel="shortcut icon" href="/img/logos/favicon.png">
@@ -23,7 +22,7 @@
     <!-- plugins -->
     <link rel="stylesheet" href="/css/plugins.css">
 
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/profile.css">
 
     <!-- search css -->
     <link rel="stylesheet" href="/search/search.css">
@@ -57,58 +56,45 @@
 
         </div>
     </section>
+    <div class="userInformation">
+        <span style="width: 2px">Name</span><br>
+        <span style="color: orange" th:text="${user.name}"></span><br>
+        <span style="width: 2px">Surname</span><br>
+        <span style="color: orange" th:text="${user.surname}"></span><br>
+        <span style="width: 2px">Email</span><br>
+        <span style="color: orange" th:text="${user.email}"></span><br>
+        <span style="width: 2px">Rating</span><br>
+        <span style="color: orange" th:text="${user.rating}"></span><br>
+    </div>
+<!--    <img src="/img/about/about-5.jpg" alt="">-->
 
-    <!-- FORM
-    ================================================== -->
-    <section>
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-9">
-
-                    <div class="position-relative elements-block">
-
-                        <div class="inner-title">
-                            <div class="main-title title-left mb-0">Login
-                                <span class="line-left"></span>
-                            </div>
-                        </div>
-
-                        <form action="/login" method="post" >
-                            <div>
-                                <div class="row">
-                                    <img src="/static/img/pictures/best-banks-2021-40543452.jpg">
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label>Your Email <span class="quform-required">*</span></label>
-                                            <div class="quform-input">
-                                                <input class="form-control" id="email" type="text" name="username" placeholder="Your email here" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label>Your Password <span class="quform-required">*</span></label>
-                                            <div class="quform-input">
-                                                <input class="form-control" id="subject" type="password" name="password" placeholder="Your password here" />
-                                            </div>
-                                        </div>
-                                        <input class="login" type="submit" value="Login">
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </form>
-
-                    </div>
-
-                </div>
+    <div class="asdfff">
+        <div class="card__header">
+<!--            <img class="card__logo" src="/img/logos/logo.png" alt="Bank Logo">-->
+            <div class="card__bank-name">LOAN</div>
+        </div>
+        <div class="card__number">
+            <div>Card Number</div>
+            <span style="color: orange" th:text="${card.number}"></span>
+        </div>
+        <div class="card__info">
+            <div class="card__info-item">
+                <div>Cardholder Name</div>
+                <span style="color: orange" th:text="${user.name}"></span>
+                <span style="color: orange" th:text="${user.surname}"></span>
+            </div>
+            <div class="card__info-item">
+                <div>Rating</div>
+                <span style="color: orange" th:text="${user.rating}"></span>
             </div>
         </div>
-    </section>
+    </div>
+<!--    <img src="/img/profile/profile-Picture.jpg" alt="" width="910" height="607">-->
 
-    <!-- FOOTER
-    ================================================== -->
+
+
+    <!-- FOOTER -->
+
     <footer class="footer1 bg-img cover-background" data-overlay-dark="8" data-background="img/bg/footer-bg.jpg">
         <div class="container">
             <div class="footer-top p-4 p-md-5 mb-6 rounded">
