@@ -15,5 +15,7 @@ public interface UserService {
 
     User register(User user, MoneyType moneyType);
 
+    User findByToken(int token);
+
     User save(User user);
 }

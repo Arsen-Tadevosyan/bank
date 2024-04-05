@@ -70,98 +70,12 @@
                             </div>
                         </div>
 
-                        <form action="/user/register" method="POST">
-                            <span style="color: red;margin-left: 380px;font-size: 20px;"
-                                  th:if="${msg != null}" th:text="${msg}"></span>
-
-                            <div>
-                                <div class="row">
-                                    <!-- Begin Text input element -->
-                                    <div class="col-md-6">
-                                        <div>
-                                            <label for="name">Your Name <span>*</span></label>
-                                            <div>
-                                                <input class="form-control" id="name" type="text" name="name"
-                                                       placeholder="Your name here"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div>
-                                            <label for="name">Your Surname <span
-                                                    class="quform-required">*</span></label>
-                                            <div class="quform-input">
-                                                <input class="form-control" id="surname" type="text" name="surname"
-                                                       placeholder="Your surname here"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- End Text input element -->
-
-                                    <!-- Begin Text input element -->
-                                    <div class="col-md-6">
-                                        <div>
-                                            <label for="email">Your Email <span class="quform-required">*</span></label>
-                                            <div class="quform-input">
-                                                <input class="form-control" id="email" type="text" name="email"
-                                                       placeholder="Your email here"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- End Text input element -->
-
-                                    <!-- Begin Text input element -->
-                                    <div class="col-md-6">
-                                        <div>
-                                            <label for="subject">Your Password <span
-                                                    class="quform-required">*</span></label>
-                                            <div class="quform-input">
-                                                <input class="form-control" id="subject" type="text" name="password"
-                                                       placeholder="Your password here"/>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div>
-                                            <label for="email">Your Age <span class="quform-required">*</span></label>
-                                            <div class="quform-input">
-                                                <input class="form-control" id="age" type="number" name="age"
-                                                       placeholder="Your age here"/>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div>
-                                            <label for="email">Your Phone <span class="quform-required">*</span></label>
-                                            <div class="quform-input">
-                                                <input class="form-control" id="phone" type="number" name="phone"
-                                                       placeholder="Your Phone here"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- End Text input element -->
-
-                                    <!-- Begin Text input element -->
-                                    <div class="col-md-6">
-                                        <div>
-                                            <label>Money Type</label>
-                                            <div class="quform-input">
-                                                <select class="select" name="moneyType">
-                                                    <option value="AMD">AMD</option>
-                                                    <option value="USD">USD</option>
-                                                    <option value="RUB">RUB</option>
-                                                </select><br>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                            <input class="register" type="submit" value="Register">
-
+                        <h2 style="color: orange">Input Verify Numbers</h2>
+                        <span style="color: red;margin-left: 380px;font-size: 20px;"
+                              th:if="${msg != null}" th:text="${msg}"></span>
+                        <form action="/user/verification" method="post">
+                            <input type="number" name="token">
+                            <input type="submit" name="submit" value="Submit">
                         </form>
                     </div>
 

@@ -1,9 +1,7 @@
-
 package com.example.bank.config;
 
-import com.example.bank.security.UserDetailService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -28,12 +26,17 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .authorizeHttpRequests()
-                .anyRequest().permitAll()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .requestMatchers("/").permitAll().
+                requestMatchers("/user/register").permitAll().
+                requestMatchers("/user/login").permitAll().
+                requestMatchers("/user/verification").permitAll().
+                anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/user/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/loginSuccessUrl")
+                .defaultSuccessUrl("/loginSuccessUrl", true)
                 .and()
                 .logout()
                 .logoutSuccessUrl("/");
