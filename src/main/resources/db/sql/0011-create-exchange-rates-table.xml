@@ -1,0 +1,22 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="0011-create-exchange-rates-table.xml" author="atadevosyan">
+        <createTable tableName="exchange_rates">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="source_currency" type="ENUM('USD', 'RUB','AMD')">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_currency" type="ENUM('USD', 'RUB','AMD')">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exchange_rate" type="double">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
