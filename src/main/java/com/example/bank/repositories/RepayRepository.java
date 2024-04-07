@@ -2,6 +2,7 @@ package com.example.bank.repositories;
 
 import com.example.bank.entity.Repay;
 import com.example.bank.entity.Transaction;
+import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.StatusRepay;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,8 @@ import java.util.List;
 public interface RepayRepository extends JpaRepository<Repay, Integer> {
 
     Page<Repay> findByTransaction(Transaction transaction, Pageable pageable);
+
+    Page<Repay> findByTransactionAndStatus(Transaction transaction, Pageable pageable, StatusRepay statusRepay);
 
     List<Repay> findByPayDayBetween(@Param("start") LocalDate start, @Param("end") LocalDate end);
 

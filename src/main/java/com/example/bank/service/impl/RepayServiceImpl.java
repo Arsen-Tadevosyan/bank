@@ -40,7 +40,7 @@ public class RepayServiceImpl implements RepayService {
 
     @Override
     public Page<Repay> getByTransaction(Transaction transaction, Pageable pageable) {
-        return repayRepository.findByTransaction(transaction,pageable);
+        return repayRepository.findByTransaction(transaction, pageable);
     }
 
     @Override
@@ -77,5 +77,10 @@ public class RepayServiceImpl implements RepayService {
     @Override
     public int findCountByTransaction(Transaction transaction) {
         return repayRepository.findCountByTransaction(transaction);
+    }
+
+    @Override
+    public Page<Repay> findByTransactionAndStatus(Transaction transaction, Pageable pageable, StatusRepay statusRepay) {
+        return repayRepository.findByTransactionAndStatus(transaction, pageable, statusRepay);
     }
 }

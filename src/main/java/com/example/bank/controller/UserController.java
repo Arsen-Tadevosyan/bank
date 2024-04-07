@@ -1,12 +1,18 @@
 package com.example.bank.controller;
 
+import com.example.bank.entity.Repay;
+import com.example.bank.entity.Transaction;
 import com.example.bank.entity.User;
 import com.example.bank.entity.enums.MoneyType;
+import com.example.bank.entity.enums.StatusRepay;
 import com.example.bank.entity.enums.UserRole;
 import com.example.bank.security.CurrentUser;
-import com.example.bank.service.CardService;
-import com.example.bank.service.UserService;
+import com.example.bank.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,6 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +32,12 @@ public class UserController {
     private final UserService userService;
 
     private final CardService cardService;
+
+    private final TransferService transferService;
+
+    private final RepayService repayService;
+
+    private final TransactionService transactionService;
 
     @GetMapping("/user/register")
     public String registerPage(@RequestParam(value = "msg", required = false) String msg, ModelMap modelMap) {
@@ -139,7 +153,7 @@ public class UserController {
         } catch (NumberFormatException e) {
             return "redirect:/user/verification?msg=Invalid Parameter Format";
         }
-        if (!(token < 899999) || !(token > 100000)) {
+        if (!(token < 999999) || !(token > 100000)) {
             return "redirect:/user/verification?msg=Invalid Parameter";
         }
         User user = userService.findByToken(token);
@@ -148,4 +162,11 @@ public class UserController {
         userService.save(user);
         return "redirect:/user/verification?msg=Verification Successes You Can Login";
     }
+
+    @GetMapping("/user/history")
+    public String historyPage() {
+        return "/user/history";
+    }
+
+
 }
