@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,6 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional
     public Transaction save(double size, int mounts, User user, TransactionType transactionType) {
         double percent = 0;
         List<Transaction> byUserAndStatus = transactionRepository.findByUserAndStatus(user, Status.DURING);
@@ -96,7 +98,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Page<Transaction> findByUser(User user, Pageable pageable) {
-        return transactionRepository.findByUser(user,pageable);
+        return transactionRepository.findByUser(user, pageable);
     }
 
     @Override

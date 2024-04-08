@@ -10,6 +10,7 @@ import com.example.bank.service.TransferService;
 import com.example.bank.util.CountCurrency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +29,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public boolean addMoney(double size, MoneyType moneyType, User user) {
         if (size < 0) {
             return false;
@@ -48,6 +50,7 @@ public class CardServiceImpl implements CardService {
 
 
     @Override
+    @Transactional
     public boolean withdrawMoney(double size, User user) {
         Card card = cardRepository.findByUser(user);
         double balance = card.getBalance();
@@ -65,6 +68,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public boolean transfer(double size, String cardNumber, User currentUser) {
         Card toCard = findByNumber(cardNumber);
         if (toCard == null) {

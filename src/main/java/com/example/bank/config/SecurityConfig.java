@@ -27,6 +27,7 @@ public class SecurityConfig {
         httpSecurity.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .requestMatchers("/img/**").permitAll()
                 .requestMatchers("/").permitAll().
                 requestMatchers("/user/register").permitAll().
                 requestMatchers("/user/login").permitAll().
