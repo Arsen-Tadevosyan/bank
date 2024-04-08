@@ -7,7 +7,11 @@ import com.example.bank.entity.User;
 import com.example.bank.entity.enums.StatusRepay;
 import com.example.bank.entity.enums.TransactionType;
 import com.example.bank.security.CurrentUser;
-import com.example.bank.service.*;
+import com.example.bank.service.CardService;
+import com.example.bank.service.TransferService;
+import com.example.bank.service.NotificationService;
+import com.example.bank.service.RepayService;
+import com.example.bank.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -225,7 +229,7 @@ public class TransactionController {
 
     }
 
-    @GetMapping("/user/Repays")
+    @GetMapping("/user/repays")
     public String Repays(@AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap,
                          @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                          @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
