@@ -36,12 +36,23 @@ public class CardController {
     }
 
     @PostMapping("/balance/add")
-    public String balanceAdd(@RequestParam("sizeAdd") double add,
-                             @RequestParam("moneyType") MoneyType moneyType,
+    public String balanceAdd(@RequestParam(name = "sizeAdd", required = false) String sizeAddString,
+                             @RequestParam(name = "moneyType", required = false) String moneyTypeString,
                              @AuthenticationPrincipal CurrentUser currentUser) {
+        if (sizeAddString == null || sizeAddString.isEmpty() || moneyTypeString == null || moneyTypeString.isEmpty()) {
+            return "redirect:/balance?msg=Missing parameters";
+        }
+        double add;
+        MoneyType moneyType;
+        try {
+            add = Double.parseDouble(sizeAddString);
+            moneyType = MoneyType.valueOf(moneyTypeString);
+        } catch (NumberFormatException e) {
+            return "redirect:/balance?msg=Invalid parameter format";
+        }
         boolean status = cardService.addMoney(add, moneyType, currentUser.getUser());
-        if (status == false) {
-            return "redirect:/balance?msg=Size money is minus";
+        if (!status) {
+            return "redirect:/balance?msg=Size money is negative";
         }
         cardService.saveAddWithdraw(AddWithdraw.builder()
                 .size(add)
@@ -54,9 +65,22 @@ public class CardController {
         return "redirect:/balance";
     }
 
+
     @PostMapping("/balance/withdraw")
-    public String withdrawMoney(@RequestParam("size") double size,
+    public String withdrawMoney(@RequestParam(name = "size", required = false) String sizeString,
                                 @AuthenticationPrincipal CurrentUser currentUser) {
+        if (sizeString == null || sizeString.isEmpty()) {
+            return "redirect:/balance?msg=Missing size parameter";
+        }
+        double size;
+        try {
+            size = Double.parseDouble(sizeString);
+        } catch (NumberFormatException e) {
+            return "redirect:/balance?msg=Invalid size parameter format";
+        }
+        if (size <= 0) {
+            return "redirect:/balance?msg=Invalid size parameter value";
+        }
         boolean success = cardService.withdrawMoney(size, currentUser.getUser());
         Card card = cardService.gatByUser(currentUser.getUser());
         cardService.saveAddWithdraw(AddWithdraw.builder()
