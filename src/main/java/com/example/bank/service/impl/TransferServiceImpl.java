@@ -1,11 +1,14 @@
 package com.example.bank.service.impl;
 
 import com.example.bank.entity.Transfer;
+import com.example.bank.entity.User;
 import com.example.bank.entity.enums.NotificationType;
 import com.example.bank.repositories.TransferRepository;
 import com.example.bank.service.TransferService;
 import com.example.bank.util.SendNotification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +24,11 @@ public class TransferServiceImpl implements TransferService {
         String size = String.valueOf(transfer.getSize());
         sendNotification.sendNotification(transfer.getTo(), NotificationType.INFO
                 , transfer.getFrom().getName() + " has transferred " + size +
-                        "|"+ transfer.getMoneyType().name() + " to your card");
+                        "|" + transfer.getMoneyType().name() + " to your card");
         return transferRepository.save(transfer);
+    }
+
+    public Page<Transfer> getTransfersForUser(User user, Pageable pageable) {
+        return transferRepository.findByFromOrTo(user, user, pageable);
     }
 }

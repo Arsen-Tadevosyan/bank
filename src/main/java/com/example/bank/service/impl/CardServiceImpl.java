@@ -1,14 +1,18 @@
 package com.example.bank.service.impl;
 
+import com.example.bank.entity.AddWithdraw;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.Transfer;
 import com.example.bank.entity.User;
 import com.example.bank.entity.enums.MoneyType;
+import com.example.bank.repositories.AddWithdrawRepository;
 import com.example.bank.repositories.CardRepository;
 import com.example.bank.service.CardService;
 import com.example.bank.service.TransferService;
 import com.example.bank.util.CountCurrency;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +25,7 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final CountCurrency countCurrency;
     private final TransferService transferService;
+    private final AddWithdrawRepository addWithdrawRepository;
 
 
     @Override
@@ -95,4 +100,13 @@ public class CardServiceImpl implements CardService {
         return true;
     }
 
+    @Override
+    public AddWithdraw saveAddWithdraw(AddWithdraw addWithdraw) {
+        return addWithdrawRepository.save(addWithdraw);
+    }
+
+    @Override
+    public Page<AddWithdraw> gatByUser(User user, Pageable pageable) {
+        return addWithdrawRepository.findByUser(user, pageable);
+    }
 }

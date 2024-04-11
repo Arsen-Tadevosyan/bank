@@ -4,16 +4,15 @@ import com.example.bank.entity.Card;
 import com.example.bank.entity.Repay;
 import com.example.bank.entity.Transaction;
 import com.example.bank.entity.User;
+import com.example.bank.entity.enums.StatusRepay;
 import com.example.bank.entity.enums.TransactionType;
 import com.example.bank.security.CurrentUser;
-import com.example.bank.service.CardService;
-import com.example.bank.service.NotificationService;
-import com.example.bank.service.RepayService;
-import com.example.bank.service.TransactionService;
+import com.example.bank.service.*;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,6 +38,7 @@ public class TransactionController {
     private final TransactionService transactionService;
     private final RepayService repayService;
     private final NotificationService notificationService;
+    private final TransferService transferService;
 
     @GetMapping("/transaction/transfer")
     public String transferMoneyPage(@RequestParam(value = "msg", required = false) String msg, ModelMap modelMap) {
@@ -268,4 +269,42 @@ public class TransactionController {
         log.info("Repayment with id {} successful", repayId);
         return "redirect:/creditSinglePage/" + repay.getTransaction().getId();
     }
+
+    @GetMapping("/user/transactions")
+    public String transactions(@AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap,
+                               @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                               @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        modelMap.addAttribute("transactions", transactionService.findByUser(currentUser.getUser(), pageable));
+        return "/user/transactionHistory";
+    }
+
+    @GetMapping("/user/transfers")
+    public String transfers(@AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap,
+                            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        modelMap.addAttribute("transfers", transferService.getTransfersForUser(currentUser.getUser(), pageable));
+        return "/user/transfersHistory";
+
+    }
+
+    @GetMapping("/user/repays")
+    public String Repays(@AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap,
+                         @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                         @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Transaction> byUser = transactionService.findByUser(currentUser.getUser(), pageable);
+        List<Repay> repays = new ArrayList<>();
+        for (Transaction transaction : byUser) {
+            Page<Repay> byTransactionAndStatus = repayService.findByTransactionAndStatus(transaction, pageable, StatusRepay.DONE);
+            repays.addAll(byTransactionAndStatus.getContent());
+        }
+        Page<Repay> repayPage = new PageImpl<>(repays, pageable, repays.size());
+
+        modelMap.addAttribute("repays", repayPage);
+
+        return "/user/repaysHistory";
+    }
+
 }
