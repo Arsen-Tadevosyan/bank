@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <!-- metas -->
+    <meta charset="utf-8">
+    <meta name="author" content="Chitrakoot Web">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="Banking and Loan Responsive Template">
+    <meta name="description" content="Loan- Banking and Loan Responsive Template">
+
+    <!-- title  -->
+    <title>Loan- Banking and Loan Responsive Template</title>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="img/logos/favicon.png">
+    <link rel="apple-touch-icon" href="img/logos/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/logos/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/logos/apple-touch-icon-114x114.png">
+
+    <!-- plugins -->
+    <link rel="stylesheet" href="/css/plugins.css">
+
+    <!-- search css -->
+    <link rel="stylesheet" href="/search/search.css">
+
+    <!-- quform css -->
+    <link rel="stylesheet" href="/quform/css/base.css">
+
+    <!-- theme core css -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <!-- CSS -->
+</head>
+
+<body>
+
+<!-- PAGE LOADING
+================================================== -->
+<div id="preloader"></div>
+
+<!-- MAIN WRAPPER
+================================================== -->
+<div class="main-wrapper">
+
+    <!-- HEADER
+    ================================================== -->
+    <th:block th:include="/user/fragment/headerFragment::userInfo"/>
+
+    <!-- PAGE TITLE
+    ================================================== -->
+    <section class="page-title-section top-position1 bg-img cover-background" data-overlay-dark="55"
+             data-background="img/bg/page-title.jpg">
+
+    </section>
+
+    <!-- CONTACT INFO
+    ================================================== -->
+    <section>
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-6 mb-4 mb-lg-0">
+                    <div class="pe-xl-7">
+                        <div class="main-title title-left">Contact Us<span class="line-left"></span></div>
+                        <h2 class="w-md-80 mb-4">If need any info please contact us!</h2>
+                        <p class="mb-1-9">There are many variations of passages of Lorem Ipsum available, but the
+                            majority have suffered alteration in some form, by injected humour, or randomised words
+                            which don't look even slightly believable. If you are going to use a passage of Lorem
+                            Ipsum.</p>
+                        <ul class="social-icon-style1 ps-0 mb-0">
+                            <li><a href="#!"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#!"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#!"><i class="fab fa-youtube"></i></a></li>
+                            <li><a href="#!"><i class="fab fa-linkedin-in"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-4">
+                    <div class="contact-box p-1-9 p-lg-5 rounded">
+                        <div class="media mb-1-6 mb-md-1-9">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="media-body ps-3 ps-sm-4">
+                                <h3 class="h5">Location</h3>
+                                <p class="mb-0 w-sm-80">66 Guild Street 512B, Great North Town.</p>
+                            </div>
+                        </div>
+                        <div class="media mb-1-6 mb-md-1-9">
+                            <i class="fas fa-phone-alt"></i>
+                            <div class="media-body ps-3 ps-sm-4">
+                                <h3 class="h5">Phone</h3>
+                                <p class="mb-1">+ (124) 1523-567-9874</p>
+                                <p class="mb-0">(+44) 123 456 789</p>
+                            </div>
+                        </div>
+                        <div class="media">
+                            <i class="far fa-envelope"></i>
+                            <div class="media-body ps-3 ps-sm-4">
+                                <h3 class="h5">Email</h3>
+                                <p class="mb-1">example@yourdomain.com</p>
+                                <p class="mb-0">info@yourdomain.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="html1"
+                 style="height: 100%; margin: 0; background: black; background: -webkit-linear-gradient(to right, orange, black, white); background: linear-gradient(to right, orange, black, white);">
+                <div class="chat" style="margin-top: auto; margin-bottom: auto;">
+                    <div class="card" style="height: 500px; border-radius: 15px; background-color: rgba(0, 0, 0, 0.4);">
+                        <div class="card-header msg_head" style="border-radius: 15px 15px 0 0; border-bottom: 0;">
+                            <div class="d-flex bd-highlight">
+                                <div class="user_info"></div>
+                            </div>
+                            <span id="action_menu_btn"
+                                  style="position: absolute; right: 10px; top: 10px; color: white; cursor: pointer; font-size: 20px;"><i
+                                    class="fas fa-ellipsis-v"></i></span>
+                        </div>
+                        <div class="card-body msg_card_body" style="overflow-y: auto;">
+                            <div th:each="message:${messages}">
+                                <div class="d-flex justify-content-end mb-4"
+                                     th:if="${message.from.getUserRole().name().equals('USER')}"
+                                     style="margin-bottom: 15px;">
+                                    <div class="msg_cotainer_send"
+                                         style="margin-top: auto; margin-bottom: auto; margin-right: 10px; border-radius: 25px; background-color: #78e08f; padding: 10px; position: relative;">
+                                        <span th:text="${message.message}"></span>
+                                        <span class="msg_time_send"
+                                              style="position: absolute; right: 0; bottom: -15px; color: rgba(255, 255, 255, 0.5); font-size: 10px;"></span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-start mb-4"
+                                     th:if="${message.from.getUserRole().name().equals('ADMIN')}"
+                                     style="margin-bottom: 15px;">
+                                    <div class="msg_cotainer"
+                                         style="margin-top: auto; margin-bottom: auto; margin-left: 10px; border-radius: 25px; background-color: #82ccdd; padding: 10px; position: relative;">
+                                        <span th:text="${message.message}"></span>
+                                        <span class="msg_time"
+                                              style="position: absolute; left: 0; bottom: -15px; color: rgba(255, 255, 255, 0.5); font-size: 10px;"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="input-group">
+                                <form action="/sendMessage" method="post">
+                                    <textarea name="message" class="form-control type_msg"
+                                              placeholder="Type your message..."
+                                              style="background-color: rgba(0, 0, 0, 0.3); border: 0; color: white; height: 60px; overflow-y: auto;"></textarea>
+                                    <div class="submit-container">
+                                        <input value="send" type="submit" class="fas fa-location-arrow"
+                                               style="border-radius: 0 15px 15px 0; background-color: rgba(0, 0, 0, 0.3); border: 0; color: white; cursor: pointer;">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT FORM
+    ================================================== -->
+
+
+    <!-- FOOTER
+    ================================================== -->
+    <footer class="footer1 bg-img cover-background" data-overlay-dark="8" data-background="img/bg/footer-bg.jpg">
+
+    </footer>
+
+</div>
+
+<!-- start scroll to top -->
+<a href="#!" class="scroll-to-top"><i class="fas fa-angle-up" aria-hidden="true"></i></a>
+<!-- end scroll to top -->
+
+<!-- all js include start -->
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- popper js -->
+<script src="/js/popper.min.js"></script>
+
+<!-- bootstrap -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- jquery -->
+<script src="/js/core.min.js"></script>
+
+<!-- Search -->
+<script src="/search/search.js"></script>
+
+<!-- custom scripts -->
+<script src="/js/main.js"></script>
+
+<!-- form plugins js -->
+<script src="/quform/js/plugins.js"></script>
+
+<!-- form scripts js -->
+<script src="/quform/js/scripts.js"></script>
+
+<!-- all js include end -->
+</body>
+
+</html>
