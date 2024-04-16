@@ -1,0 +1,17 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+<changeSet id="0013-create-chatroom-table.xml" author="rmuradyan">
+    <sql>
+        CREATE TABLE chatroom (
+                                  id INT PRIMARY KEY AUTO_INCREMENT,
+                                  admin_id INT NOT NULL,
+                                  user_id INT NOT NULL,
+                                  CONSTRAINT chatroom_user_id_fk FOREIGN KEY (admin_id) REFERENCES user (id),
+                                  CONSTRAINT chatroom_user_id_fk_2 FOREIGN KEY (user_id) REFERENCES user (id)
+        );
+    </sql>
+
+</changeSet>
+</databaseChangeLog>

@@ -1,23 +1,19 @@
 package com.example.bank.controller;
 
-import com.example.bank.entity.Repay;
-import com.example.bank.entity.Transaction;
+import com.example.bank.entity.ChatRoom;
+import com.example.bank.entity.Message;
 import com.example.bank.entity.User;
 import com.example.bank.entity.enums.MoneyType;
-import com.example.bank.entity.enums.StatusRepay;
 import com.example.bank.entity.enums.UserRole;
 import com.example.bank.security.CurrentUser;
-
+import com.example.bank.service.TransactionService;
 import com.example.bank.service.CardService;
 import com.example.bank.service.RepayService;
 import com.example.bank.service.TransferService;
+import com.example.bank.service.ChatRoomService;
+import com.example.bank.service.MessageService;
 import com.example.bank.service.UserService;
-import com.example.bank.service.TransactionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -34,7 +30,9 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class UserController {
 
+    private final ChatRoomService chatRoomService;
     private final UserService userService;
+    private final MessageService messageService;
 
     private final CardService cardService;
 
@@ -126,8 +124,7 @@ public class UserController {
             if (user.getUserRole() == UserRole.USER) {
                 return "redirect:/";
             }
-            //AdminPage
-            return "/";
+            return "redirect:/admin/home";
         }
         return "redirect:/user/login?msg=Login Success";
     }
@@ -138,6 +135,15 @@ public class UserController {
         modelMap.addAttribute("card", cardService.gatByUser(currentUser.getUser()));
         return "/user/profile";
     }
+
+    @GetMapping("/contactUs")
+    public String contactUsPage(@AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap) {
+        ChatRoom chatRoom = chatRoomService.getByUser(currentUser.getUser());
+        List<Message> messages = messageService.getByChatRoom(chatRoom);
+        modelMap.addAttribute("messages", messages);
+        return "user/contactUs";
+    }
+
 
     @GetMapping("/user/verification")
     public String verifyPage(@RequestParam(name = "msg", required = false) String msg, ModelMap modelMap) {

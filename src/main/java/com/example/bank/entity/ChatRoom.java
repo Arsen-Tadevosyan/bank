@@ -13,26 +13,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "message")
+@Table(name = "chatroom")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Message {
-
+public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @ManyToOne
-    private User from;
-
+    private User admin;
     @ManyToOne
-    private User to;
+    private User user;
 
-    private String message;
-
-    @ManyToOne
-    private ChatRoom chatroom;
 
 }
