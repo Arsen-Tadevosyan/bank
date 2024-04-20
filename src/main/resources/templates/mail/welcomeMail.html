@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
+<div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+    <h2 style="color: #333; margin-bottom: 20px;">Welcome <span style="color: #007bff;" th:text="${user.name}"></span>
+    </h2>
+
+    <h2 style="color: orange; margin-bottom: 20px;">IT IS YOUR VERIFICATION CODE!</h2>
+
+    <h2 style="color: orange; margin-bottom: 20px;" th:text="${user.token}"></h2>
+</div>
+</body>
+</html>

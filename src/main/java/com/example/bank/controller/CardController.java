@@ -104,7 +104,8 @@ public class CardController {
         log.info("{} {} {} {} from their card at {}", username, action, amount, transactionType, LocalDateTime.now());
     }
 
-    @GetMapping("/user/AddWithdraw")
+
+    @GetMapping("/user/addWithdraw")
     public String AddWithdraw(@AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap,
                               @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                               @RequestParam(value = "size", defaultValue = "10", required = false) int size) {

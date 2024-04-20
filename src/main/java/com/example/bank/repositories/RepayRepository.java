@@ -2,7 +2,6 @@ package com.example.bank.repositories;
 
 import com.example.bank.entity.Repay;
 import com.example.bank.entity.Transaction;
-import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.StatusRepay;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +13,11 @@ import java.util.List;
 
 public interface RepayRepository extends JpaRepository<Repay, Integer> {
 
-    Page<Repay> findByTransaction(Transaction transaction, Pageable pageable);
+    List<Repay> findByTransaction(Transaction transaction);
+
+    Page<Repay> getByTransaction(Transaction transaction, Pageable pageable);
+
+    List<Repay> findByTransactionAndStatus(Transaction transaction, StatusRepay status);
 
     Page<Repay> findByTransactionAndStatus(Transaction transaction, Pageable pageable, StatusRepay statusRepay);
 
@@ -23,4 +26,6 @@ public interface RepayRepository extends JpaRepository<Repay, Integer> {
     int findCountByTransactionAndStatus(Transaction transaction, StatusRepay statusRepay);
 
     int findCountByTransaction(Transaction transaction);
+
+
 }

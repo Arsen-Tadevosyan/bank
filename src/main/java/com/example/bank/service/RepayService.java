@@ -27,6 +27,9 @@ public interface RepayService {
 
     int findCountByTransaction(Transaction transaction);
 
+    List<Repay> findByTransaction(Transaction transaction);
+
+
     Page<Repay> findByTransactionAndStatus(Transaction transaction, Pageable pageable, StatusRepay statusRepay);
 
 }

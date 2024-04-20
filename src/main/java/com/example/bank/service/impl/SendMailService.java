@@ -19,23 +19,20 @@ public class SendMailService {
     private final TemplateEngine templateEngine;
 
     @Async
-    public void sendWelcomeMail(String to, String subject, User user, String link, String templateName) throws MessagingException {
+    public void sendVerificationMail(String to, String subject, User user,String templateName) throws MessagingException {
         final Context ctx = new Context();
         ctx.setVariable("user", user);
         ctx.setVariable("name", user.getName());
-        ctx.setVariable("url", link);
 
         final String htmlContent = templateEngine.process(templateName, ctx);
 
-        // Prepare message using a Spring helper
         final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8"); // true = multipart
+        final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
         message.setSubject(subject);
         message.setTo(to);
 
-        message.setText(htmlContent, true); // true = isHtml
+        message.setText(htmlContent, true);
 
-        // Send mail
         javaMailSender.send(mimeMessage);
     }
 }
