@@ -80,8 +80,8 @@
 
                         <a class="butn small" href="/user/transfers">Transfers</a>
                         <a class="butn small" href="/user/transactions">Transaction</a>
-                        <a class="butn small" href="/user/transactions">Add/Withdraw</a>
-                        <a class="butn small" href="/user/Repays">Repays</a>
+                        <a class="butn small" href="/user/addWithdraw">Add/Withdraw</a>
+                        <a class="butn small" href="/user/repays">Repays</a>
                         <div class="table-responsive">
                             <table class="table mb-0">
                                 <thead>
@@ -113,12 +113,11 @@
                                     <li th:each="pageNumber : ${#numbers.sequence(0, repays.totalPages - 1)}"
                                         th:class="${pageNumber == repays.number} ? 'page-item active' : 'page-item'">
                                         <a class="page-link"
-                                           th:href="@{'/user/Repays' + '?page=' + ${pageNumber} + '&size=' + ${repays.size}}"
+                                           th:href="@{'/user/repays' + '?page=' + ${pageNumber + 1} + '&size=' + ${repays.size}}"
                                            th:text="${pageNumber + 1}"></a>
                                     </li>
                                 </ul>
                             </nav>
-
 
                         </div>
                     </div>

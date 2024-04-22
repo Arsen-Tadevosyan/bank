@@ -51,8 +51,8 @@ public class UserServiceImpl implements UserService {
         user.setToken(randomNumber);
         userRepository.save(user);
         try {
-            sendMailService.sendWelcomeMail(user.getEmail(), "Welcome" + " " + user.getName(), user,
-                    " http://localhost:8080/user/activate?token=" + user.getToken(), "welcomeMail");
+            sendMailService.sendVerificationMail(user.getEmail(), "Welcome" + " " + user.getName(), user,
+                    "mail/welcomeMail");
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
@@ -75,4 +75,5 @@ public class UserServiceImpl implements UserService {
     public User findByToken(int token) {
         return userRepository.findByToken(token);
     }
+
 }

@@ -16,6 +16,8 @@ public interface TransactionService {
 
     Page<Transaction> findByUser(User user, Pageable pageable);
 
+    List<Transaction> getByUser(User user);
+
     Transaction getById(int id);
 
     List<Transaction> findAll();
