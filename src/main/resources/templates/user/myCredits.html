@@ -107,7 +107,10 @@
                                     <td th:text="${transaction.months}"></td>
                                     <td th:text="${transaction.status.name()}"></td>
                                     <td>
-                                        <a th:href="@{'/creditSinglePage/'+ ${transaction.id}}">Single Page</a>
+                                        <a th:if="${transaction.transactionType.name()!='DEPOSIT'}"
+                                           th:href="@{'/creditSinglePage/'+ ${transaction.id}}">Single Page</a>
+                                        <a th:if="${transaction.transactionType.name()=='DEPOSIT'}"
+                                           th:href="@{'/transaction/getDeposit/' + ${transaction.id}}">Get</a>
                                     </td>
                                 </tr>
                                 </tbody>

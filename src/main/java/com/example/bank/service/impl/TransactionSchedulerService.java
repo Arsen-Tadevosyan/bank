@@ -6,6 +6,7 @@ import com.example.bank.entity.User;
 import com.example.bank.entity.enums.NotificationType;
 import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.StatusRepay;
+import com.example.bank.entity.enums.TransactionType;
 import com.example.bank.service.RepayService;
 import com.example.bank.service.TransactionService;
 import com.example.bank.service.UserService;
@@ -21,7 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CreditSchedulerService {
+public class TransactionSchedulerService {
 
     private final RepayService repayService;
     private final SendNotification sendNotification;
@@ -86,4 +87,21 @@ public class CreditSchedulerService {
     }
 
 
+    @Scheduled(cron = "0 0 0 1 * *")
+    public void deposit() {
+        LocalDate today = LocalDate.now();
+        List<Transaction> transactions = transactionService.findByTransactionTypeAndStatus(TransactionType.DEPOSIT, Status.DURING);
+        for (Transaction transaction : transactions) {
+            if (transaction.getIssueDate().getDayOfMonth() == today.getDayOfMonth()) {
+                double remainingMoney = transaction.getRemainingMoney();
+                if (transaction.getIssueDate().equals(transaction.getFinishDate())) {
+                    transaction.setRemainingMoney(remainingMoney + (remainingMoney * 0.01));
+                    transactionService.update(transaction);
+                } else {
+                    transaction.setRemainingMoney(remainingMoney + (remainingMoney * 0.02));
+                    transactionService.update(transaction);
+                }
+            }
+        }
+    }
 }

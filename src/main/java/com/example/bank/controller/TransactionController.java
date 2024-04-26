@@ -1,5 +1,9 @@
 package com.example.bank.controller;
 
+import com.example.bank.entity.*;
+import com.example.bank.entity.enums.NotificationType;
+import com.example.bank.entity.enums.Status;
+import com.example.bank.entity.enums.StatusRepay;
 import com.example.bank.dto.CreditRequestDto;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.Repay;
@@ -27,6 +31,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -348,6 +354,68 @@ public class TransactionController {
         Page<Repay> repayPage = new PageImpl<>(pageRepayList, PageRequest.of(page - 1, size), repays.size());
         modelMap.addAttribute("repays", repayPage);
         return "/user/repaysHistory";
+    }
+
+    @GetMapping("/transaction/deposit")
+    public String depositPage(@RequestParam(value = "msg", required = false) String msg, ModelMap modelMap) {
+        if (msg != null) {
+            modelMap.addAttribute("msg", msg);
+        }
+        return "/user/deposit";
+    }
+
+    @PostMapping("/transaction/deposit")
+    public String deposit(@AuthenticationPrincipal CurrentUser currentUser,
+                          @RequestParam(value = "sizeMoney", required = false) double size,
+                          @RequestParam(value = "months", required = false) Integer months) {
+        Transaction transaction;
+        if (months == null) {
+            transaction = transactionService.saveFreeTimeDeposit(currentUser.getUser(), size);
+        } else {
+            transaction = transactionService.saveDeposit(currentUser.getUser(), size, months);
+        }
+        if (transaction == null) {
+            return "redirect:/transaction/deposit?msg=Your request was declined";
+        }
+        return "redirect:/transaction/deposit?msg=Your request confirmed";
+    }
+
+    @GetMapping("/transaction/getDeposit/{id}")
+    public String getDeposit(@PathVariable("id") int id, @AuthenticationPrincipal CurrentUser currentUser) {
+        User user = currentUser.getUser();
+        Transaction transaction = transactionService.getById(id);
+        if (!user.equals(transaction.getUser())) {
+            return "redirect:/transaction/deposit?msg=You don't have the right user";
+        }
+        if (transaction.getStatus() == Status.DURING) {
+            if (!transaction.getIssueDate().equals(transaction.getFinishDate())) {
+                if (transaction.getFinishDate().isBefore(LocalDate.now())) {
+                    Card card = cardService.gatByUser(user);
+                    double addMoney = transaction.getRemainingMoney() + card.getBalance();
+                    card.setBalance(addMoney);
+                    transaction.setStatus(Status.FINISHED);
+                    notificationService.save(Notification.builder()
+                            .notificationType(NotificationType.INFO)
+                            .user(user)
+                            .dateDispatch(LocalDateTime.now())
+                            .message("   your deposit has been successfully completed")
+                            .build());
+                }
+            }
+            if (transaction.getIssueDate().equals(transaction.getFinishDate())) {
+                Card card = cardService.gatByUser(user);
+                double addMoney = transaction.getRemainingMoney() + card.getBalance();
+                card.setBalance(addMoney);
+                transaction.setStatus(Status.FINISHED);
+                notificationService.save(Notification.builder()
+                        .notificationType(NotificationType.INFO)
+                        .user(user)
+                        .dateDispatch(LocalDateTime.now())
+                        .message("   your deposit has been successfully completed")
+                        .build());
+            }
+        }
+        return "redirect:/myCredits";
     }
 
 }
