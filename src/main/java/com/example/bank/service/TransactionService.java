@@ -2,6 +2,7 @@ package com.example.bank.service;
 
 import com.example.bank.entity.Transaction;
 import com.example.bank.entity.User;
+import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.TransactionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +22,10 @@ public interface TransactionService {
     Transaction getById(int id);
 
     List<Transaction> findAll();
+
+    Transaction saveDeposit(User user, double size, int mounts);
+
+    Transaction saveFreeTimeDeposit(User user, double size);
+
+    List<Transaction> findByTransactionTypeAndStatus(TransactionType transactionType, Status status);
 }
