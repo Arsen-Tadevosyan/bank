@@ -32,6 +32,9 @@ public class SecurityConfig {
                 requestMatchers("/user/register").permitAll().
                 requestMatchers("/user/login").permitAll().
                 requestMatchers("/user/verification").permitAll().
+                requestMatchers("/user/forgetPassword").permitAll().
+                requestMatchers("/user/newPassword/**").permitAll().
+                requestMatchers("/user/updatePassword").permitAll().
                 anyRequest().authenticated()
                 .and()
                 .formLogin()

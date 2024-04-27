@@ -6,41 +6,42 @@ import com.example.bank.entity.User;
 import com.example.bank.entity.enums.MoneyType;
 import com.example.bank.entity.enums.UserRole;
 import com.example.bank.security.CurrentUser;
-import com.example.bank.service.TransactionService;
 import com.example.bank.service.CardService;
-import com.example.bank.service.RepayService;
-import com.example.bank.service.TransferService;
 import com.example.bank.service.ChatRoomService;
 import com.example.bank.service.MessageService;
 import com.example.bank.service.UserService;
+import com.example.bank.service.impl.SendMailService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final ChatRoomService chatRoomService;
+    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final MessageService messageService;
 
     private final CardService cardService;
 
-    private final TransferService transferService;
-
-    private final RepayService repayService;
-
-    private final TransactionService transactionService;
+    private final SendMailService sendMailService;
 
     @GetMapping("/user/register")
     public String registerPage(@RequestParam(value = "msg", required = false) String msg, ModelMap modelMap) {
@@ -154,7 +155,8 @@ public class UserController {
     }
 
     @PostMapping("/user/verification")
-    public String verify(@RequestParam(name = "token", required = false) String stringToken) {
+    public String verify(@RequestParam(name = "token", required = false) String stringToken,
+                         ModelMap modelMap) {
         if (stringToken == null || stringToken == "") {
             return "redirect:/user/verification?msg=Invalid Token";
         }
@@ -168,6 +170,9 @@ public class UserController {
             return "redirect:/user/verification?msg=Invalid Parameter";
         }
         User user = userService.findByToken(token);
+        if (user.isActive()) {
+            return "redirect:/user/newPassword/" + user.getEmail();
+        }
         user.setActive(true);
         user.setToken(0);
         userService.save(user);
@@ -177,5 +182,54 @@ public class UserController {
     @GetMapping("/user/history")
     public String historyPage() {
         return "/user/history";
+    }
+
+
+    @PostMapping("/user/forgetPassword")
+    public String forgetPassword(@RequestParam(name = "msg", required = false) String msg,
+                                 @RequestParam(value = "email", required = false) String email,
+                                 ModelMap modelMap) {
+        if (email == null || email == "") {
+            return "redirect:/user/forgetPassword?msg=Invalid Email";
+        }
+        Optional<User> user = userService.findByEmail(email);
+        if (user.isEmpty()) {
+            return "redirect:/user/forgetPassword?msg=Invalid Email";
+        }
+        if (msg != null && !msg.isEmpty()) {
+            modelMap.addAttribute("msg", msg);
+        }
+        Random random = new Random();
+        int randomNumber = random.nextInt(899999) + 100000;
+        user.get().setToken(randomNumber);
+        userService.save(user.get());
+        try {
+            sendMailService.sendVerificationMail(user.get().getEmail(), "Welcome" + " " + user.get().getName(), user.get(),
+                    "mail/forgetPasswordMail");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return "redirect:/user/verification";
+    }
+
+    @GetMapping("/user/forgetPassword")
+    public String forgetPasswordPage() {
+        return "user/forgetPassword";
+    }
+
+    @GetMapping("/user/newPassword/{email}")
+    public String newPasswordPage(@PathVariable("email") String email, ModelMap modelMap) {
+        modelMap.addAttribute("email", email);
+        return "/user/newPassword";
+    }
+
+
+    @PostMapping("/user/updatePassword")
+    public String updatePassword(@RequestParam(value = "password", required = false) String newPassword,
+                                 @RequestParam(value = "email", required = false) String email) {
+        Optional<User> user = userService.findByEmail(email);
+        user.get().setPassword(passwordEncoder.encode(newPassword));
+        userService.save(user.get());
+        return "redirect:/user/login?msg=Password Updated";
     }
 }

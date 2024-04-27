@@ -9,7 +9,6 @@ import com.example.bank.entity.Notification;
 
 import com.example.bank.entity.enums.NotificationType;
 import com.example.bank.entity.enums.Status;
-import com.example.bank.entity.enums.StatusRepay;
 import com.example.bank.entity.enums.TransactionType;
 import com.example.bank.security.CurrentUser;
 
@@ -282,6 +281,7 @@ public class TransactionController {
         return "redirect:/creditSinglePage/" + repay.getTransaction().getId();
     }
 
+
     @GetMapping("/user/transactions")
     public String transactions(@AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap,
                                @RequestParam(value = "page", defaultValue = "1", required = false) int page,
@@ -304,18 +304,24 @@ public class TransactionController {
     @GetMapping("/user/repays")
     public String Repays(@AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap,
                          @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                         @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Transaction> byUser = transactionService.findByUser(currentUser.getUser(), pageable);
-        List<Repay> repays = new ArrayList<>();
-        for (Transaction transaction : byUser) {
-            Page<Repay> byTransactionAndStatus = repayService.findByTransactionAndStatus(transaction, pageable, StatusRepay.DONE);
-            repays.addAll(byTransactionAndStatus.getContent());
+                         @RequestParam(value = "size", defaultValue = "20", required = false) int size) {
+        if (size > 20) {
+            return "redirect:/user/repays?page=" + page + "&size=20";
         }
-        Page<Repay> repayPage = new PageImpl<>(repays, pageable, repays.size());
-
+        List<Transaction> byUser = transactionService.getByUser(currentUser.getUser());
+        List<Repay> repays = new ArrayList<>();
+        if (byUser.isEmpty()) {
+            return "redirect:/myCredits?msg=You don't have any repays";
+        }
+        for (Transaction transaction : byUser) {
+            List<Repay> byTransactionAndStatus = repayService.findByTransaction(transaction);
+            repays.addAll(byTransactionAndStatus);
+        }
+        int startIndex = (page - 1) * size;
+        int endIndex = Math.min(startIndex + size, repays.size());
+        List<Repay> pageRepayList = repays.subList(startIndex, endIndex);
+        Page<Repay> repayPage = new PageImpl<>(pageRepayList, PageRequest.of(page - 1, size), repays.size());
         modelMap.addAttribute("repays", repayPage);
-
         return "/user/repaysHistory";
     }
 
