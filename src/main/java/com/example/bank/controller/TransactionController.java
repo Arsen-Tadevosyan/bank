@@ -1,6 +1,12 @@
 package com.example.bank.controller;
 
-import com.example.bank.entity.*;
+
+import com.example.bank.entity.Card;
+import com.example.bank.entity.Repay;
+import com.example.bank.entity.Transaction;
+import com.example.bank.entity.User;
+import com.example.bank.entity.Notification;
+
 import com.example.bank.entity.enums.NotificationType;
 import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.StatusRepay;
