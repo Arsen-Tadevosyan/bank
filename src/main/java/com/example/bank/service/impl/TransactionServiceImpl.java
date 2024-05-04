@@ -117,23 +117,9 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findByStatus(status);
     }
 
-    @Override
-    public Page<Transaction> getAll(Pageable pageable) {
-        return transactionRepository.findAll(pageable);
-    }
-
-    @Override
+     @Override
     public Page<Transaction> findBySpecification(Specification<Transaction> specification, Pageable pageable) {
         return transactionRepository.findAll(specification, pageable);
     }
 
-//    @Override
-//    public Page<Transaction> findByFilter(TransactionFilterDto transactionFilterDto, Pageable pageable) {
-//        return transactionRepository.filterTransactions(transactionFilterDto,pageable);
-//    }
-
-//    @Override
-//    public Page<Transaction> searchTransactions(TransactionFilterDto filter, Pageable pageable) {
-//        return transactionRepository.findTransactionsByFilter(filter, pageable);
-//    }
 }
