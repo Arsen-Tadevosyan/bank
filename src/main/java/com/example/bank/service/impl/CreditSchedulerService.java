@@ -69,7 +69,7 @@ public class CreditSchedulerService {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void checkTransactionsInProcess() {
-        List<Transaction> transactions = transactionService.findAll();
+        List<Transaction> transactions = transactionService.findByStatus(Status.DURING);
 
         for (Transaction transaction : transactions) {
             int countByTransactionAndStatus = repayService.findCountByTransactionAndStatus(transaction, StatusRepay.DONE);

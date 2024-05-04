@@ -13,6 +13,6 @@ public class MainController {
 
     @GetMapping("/admin/home")
     public String mainPageForAdmin() {
-        return "redirect:/admin/chats";
+        return "redirect:/admin/transactions";
     }
 }

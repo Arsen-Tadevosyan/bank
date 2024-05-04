@@ -1,5 +1,6 @@
 package com.example.bank.controller;
 
+import com.example.bank.dto.CreditRequestDto;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.Repay;
 import com.example.bank.entity.Transaction;
@@ -17,10 +18,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,24 +55,27 @@ public class TransactionController {
     @PostMapping("/transaction/transfer")
     public String transferMoney(@RequestParam(name = "size", required = false) String sizeString,
                                 @RequestParam(name = "cardNumber", required = false) String cardNumber,
-                                @AuthenticationPrincipal CurrentUser currentUser) {
-        if (sizeString == null || sizeString.isEmpty() || cardNumber == null || cardNumber.isEmpty()) {
-            return "redirect:/transaction/transfer?msg=Missing parameters";
+                                @AuthenticationPrincipal CurrentUser currentUser,
+                                RedirectAttributes redirectAttributes) {
+        if (StringUtils.isBlank(sizeString) || StringUtils.isBlank(cardNumber)) {
+            redirectAttributes.addFlashAttribute("msg", "Missing parameters");
+            return "redirect:/transaction/transfer";
         }
         double size;
         try {
             size = Double.parseDouble(sizeString);
         } catch (NumberFormatException e) {
-            return "redirect:/transaction/transfer?msg=Invalid parameter format";
+            redirectAttributes.addFlashAttribute("msg", "Invalid parameter format");
+            return "redirect:/transaction/transfer";
         }
         boolean status = cardService.transfer(size, cardNumber, currentUser.getUser());
         if (!status) {
             log.warn("Not enough money on the card for transfer. Card Number: {}", cardNumber);
-            return "redirect:/transaction/transfer?msg=There is not enough money on your card or the card does not exist";
+            redirectAttributes.addFlashAttribute("msg", "There is not enough money on your card or the card does not exist");
         } else {
             log.info("Money successfully transferred from card: {}", cardNumber);
-            return "redirect:/transaction/transfer";
         }
+        return "redirect:/transaction/transfer";
     }
 
 
@@ -98,30 +106,33 @@ public class TransactionController {
     }
 
     @PostMapping("/transaction/personalCredit")
-    public String PersonalCredit(@AuthenticationPrincipal CurrentUser currentUser,
-                                 @RequestParam(name = "sizeMoney", required = false) String sizeString,
-                                 @RequestParam(name = "months", required = false) String monthsString) {
-        if (sizeString == null || sizeString.isEmpty() || monthsString == null || monthsString.isEmpty()) {
-            return "redirect:/transaction/personalCredit?msg=Missing parameters";
+    public String personalCredit(@AuthenticationPrincipal CurrentUser currentUser,
+                                 @Validated CreditRequestDto request,
+                                 BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMessage.append(error.getDefaultMessage()).append(" ");
+            }
+            redirectAttributes.addAttribute("msg", errorMessage.toString());
+            return "redirect:/transaction/personalCredit";
         }
-        double size;
-        int months;
-        try {
-            size = Double.parseDouble(sizeString);
-            months = Integer.parseInt(monthsString);
-        } catch (NumberFormatException e) {
-            return "redirect:/transaction/personalCredit?msg=Invalid parameter format";
-        }
+        double size = request.getSizeMoney();
+        int months = request.getMonths();
         User user = currentUser.getUser();
         if (user.getRating() == 0) {
-            return "redirect:/transaction/personalCredit?msg=Your request was declined due to your credit history";
+            redirectAttributes.addAttribute("msg", "Your request was declined due to your credit history");
+            return "redirect:/transaction/personalCredit";
         }
         Transaction transaction = transactionService.save(size, months, user, TransactionType.PERSONAL);
         if (transaction == null) {
-            return "redirect:/transaction/personalCredit?msg=Your request was declined";
+            redirectAttributes.addAttribute("msg", "Your request was declined");
+            return "redirect:/transaction/personalCredit";
         }
         repayService.save(transaction);
-        return "redirect:/transaction/personalCredit?msg=Your transaction has been confirmed";
+        redirectAttributes.addAttribute("msg", "Your transaction has been confirmed");
+        return "redirect:/transaction/personalCredit";
     }
 
 
@@ -134,29 +145,40 @@ public class TransactionController {
 
     @PostMapping("/transaction/educationCredit")
     public String EducationCredit(@AuthenticationPrincipal CurrentUser currentUser,
-                                  @RequestParam(name = "sizeMoney", required = false) String sizeString,
-                                  @RequestParam(name = "months", required = false) String monthsString) {
-        if (sizeString == null || sizeString.isEmpty() || monthsString == null || monthsString.isEmpty()) {
-            return "redirect:/transaction/personalCredit?msg=Missing parameters";
+                                  @Validated CreditRequestDto request,
+                                  BindingResult bindingResult,
+                                  RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMessage.append(error.getDefaultMessage()).append(" ");
+            }
+            redirectAttributes.addAttribute("msg", errorMessage.toString());
+            return "redirect:/transaction/personalCredit";
         }
         double size;
         int months;
         try {
-            size = Double.parseDouble(sizeString);
-            months = Integer.parseInt(monthsString);
+            size = request.getSizeMoney();
+            months = request.getMonths();
         } catch (NumberFormatException e) {
-            return "redirect:/transaction/personalCredit?msg=Invalid parameter format";
+            redirectAttributes.addAttribute("msg", "Invalid parameter format");
+            return "redirect:/transaction/personalCredit";
         }
         User user = currentUser.getUser();
         if (user.getRating() == 0) {
-            return "redirect:/transaction/personalCredit?msg=Your request was declined due to your credit history";
+            redirectAttributes.addAttribute("msg", "Your request was declined due to your credit history");
+            return "redirect:/transaction/personalCredit";
         }
         Transaction transaction = transactionService.save(size, months, user, TransactionType.EDUCATION);
         if (transaction == null) {
-            return "redirect:/transaction/personalCredit?msg=Your request was declined";
+            redirectAttributes.addAttribute("msg", "Your request was declined");
+            return "redirect:/transaction/personalCredit";
         }
+
         repayService.save(transaction);
-        return "redirect:/transaction/personalCredit?msg=Your transaction has been confirmed";
+        redirectAttributes.addAttribute("msg", "Your transaction has been confirmed");
+        return "redirect:/transaction/personalCredit";
     }
 
 
@@ -169,30 +191,39 @@ public class TransactionController {
 
     @PostMapping("/transaction/businessCredit")
     public String BusinessCredit(@AuthenticationPrincipal CurrentUser currentUser,
-                                 @RequestParam(name = "sizeMoney", required = false) String sizeString,
-                                 @RequestParam(name = "months", required = false) String monthsString) {
-        if (sizeString == null || sizeString.isEmpty() || monthsString == null || monthsString.isEmpty()) {
-            return "redirect:/transaction/personalCredit?msg=Missing parameters";
+                                 @Validated CreditRequestDto request,
+                                 BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMessage.append(error.getDefaultMessage()).append(" ");
+            }
+            redirectAttributes.addAttribute("msg", errorMessage.toString());
+            return "redirect:/transaction/personalCredit";
         }
         double size;
         int months;
         try {
-            size = Double.parseDouble(sizeString);
-            months = Integer.parseInt(monthsString);
+            size = request.getSizeMoney();
+            months = request.getMonths();
         } catch (NumberFormatException e) {
-            return "redirect:/transaction/personalCredit?msg=Invalid parameter format";
+            redirectAttributes.addAttribute("msg", "Invalid parameter format");
+            return "redirect:/transaction/personalCredit";
         }
         User user = currentUser.getUser();
         if (user.getRating() == 0) {
-            return "redirect:/transaction/personalCredit?msg=Your request was declined due to your credit history";
+            redirectAttributes.addAttribute("msg", "Your request was declined due to your credit history");
+            return "redirect:/transaction/personalCredit";
         }
         Transaction transaction = transactionService.save(size, months, user, TransactionType.BUSINESS);
         if (transaction == null) {
-            return "redirect:/transaction/personalCredit?msg=Your request was declined";
+            redirectAttributes.addAttribute("msg", "Your request was declined");
+            return "redirect:/transaction/personalCredit";
         }
-
         repayService.save(transaction);
-        return "redirect:/transaction/personalCredit?msg=Your transaction has been confirmed";
+        redirectAttributes.addAttribute("msg", "Your transaction has been confirmed");
+        return "redirect:/transaction/personalCredit";
     }
 
     @GetMapping("/myCredits")
@@ -236,34 +267,40 @@ public class TransactionController {
 
     @PostMapping("/repay")
     public String Repay(@AuthenticationPrincipal CurrentUser currentUser,
-                        @RequestParam(name = "repayId", required = false) String id) {
+                        @RequestParam(name = "repayId", required = false) String id,
+                        RedirectAttributes redirectAttributes) {
         if (StringUtils.isBlank(id)) {
+            redirectAttributes.addFlashAttribute("msg", "Invalid or missing repayId");
             log.warn("Repay method called with invalid or missing repayId");
-            return "redirect:/myCredits?msg=Invalid or missing repayId";
+            return "redirect:/myCredits";
         }
         Integer repayId;
         try {
             repayId = Integer.parseInt(id);
         } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("msg", "Invalid format for repayId");
             log.warn("Repay method called with invalid repayId format");
-            return "redirect:/myCredits?msg=Invalid format for repayId";
+            return "redirect:/myCredits";
         }
         log.info("Repay method called by user: {} for repayId: {}", currentUser.getUser().getEmail(), repayId);
         Optional<Repay> serviceById = repayService.getById(repayId);
         if (serviceById.isEmpty()) {
+            redirectAttributes.addFlashAttribute("msg", "You don't have a repayment with that id");
             log.warn("Repayment with id {} not found for user {}", repayId, currentUser.getUser().getEmail());
-            return "redirect:/myCredits?msg=You don't have a repayment with that id";
+            return "redirect:/myCredits";
         }
         Repay repay = serviceById.get();
         if (!repay.getTransaction().getUser().equals(currentUser.getUser())) {
+            redirectAttributes.addFlashAttribute("msg", "You don't have a repayment with that id");
             log.warn("Repayment with id {} does not belong to user {}", repayId, currentUser.getUser().getEmail());
-            return "redirect:/myCredits?msg=You don't have a repayment with that id";
+            return "redirect:/myCredits";
         }
         Card card = cardService.gatByUser(currentUser.getUser());
         boolean status = repayService.repay(repayId, card);
         if (!status) {
+            redirectAttributes.addFlashAttribute("msg", "Your balance is insufficient or you have already paid with that ID");
             log.warn("Failed to repay with id {} due to insufficient balance or already paid", repayId);
-            return "redirect:/creditSinglePage/" + repay.getTransaction().getId() + "?msg=Your balance is insufficient or you have already paid with that ID";
+            return "redirect:/creditSinglePage/" + repay.getTransaction().getId();
         }
         log.info("Repayment with id {} successful", repayId);
         return "redirect:/creditSinglePage/" + repay.getTransaction().getId();

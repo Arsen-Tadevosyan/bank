@@ -127,7 +127,7 @@ public class UserController {
             }
             return "redirect:/admin/home";
         }
-        return "redirect:/user/login?msg=Login Success";
+        return "redirect:/user/login";
     }
 
     @GetMapping("/user/profile")

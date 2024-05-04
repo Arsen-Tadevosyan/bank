@@ -135,8 +135,11 @@
                                            name="toEmail">
                                     <textarea name="message" class="form-control type_msg"
                                               placeholder="Type your message..."></textarea>
-                                    <div class="input-group-append">
-                                        <input type="submit" class="fas fa-location-arrow">
+                                    <div class="input-group">
+                                        <textarea id="messageInput" class="form-control type_msg" placeholder="Type your message..."></textarea>
+                                        <div class="input-group-append">
+                                            <button onclick="sendMessage()">Send</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -157,7 +160,31 @@
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
+<script>
+    // Connect to WebSocket endpoint
+    var socket = new SockJS('/ws');
+    var stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+        // Subscribe to the chat topic
+        stompClient.subscribe('/topic/chat', function (message) {
+            showMessage(JSON.parse(message.body));
+        });
+    });
+
+    // Function to send a message
+    function sendMessage(message) {
+        stompClient.send("/app/sendMessage", {}, JSON.stringify(message));
+    }
+
+    // Function to display a message
+    function showMessage(message) {
+        // Update your UI to display the incoming message
+    }
+</script>
 </body>
 
 </html>

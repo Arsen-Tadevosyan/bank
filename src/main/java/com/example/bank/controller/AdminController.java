@@ -38,4 +38,9 @@ public class AdminController {
         modelMap.addAttribute("messages", messages);
         return "admin/chats";
     }
+
+    @GetMapping("/admin/transactions")
+    public String Transactions() {
+        return "admin/transactions";
+    }
 }
