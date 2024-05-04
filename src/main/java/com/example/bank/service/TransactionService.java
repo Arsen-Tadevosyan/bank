@@ -6,6 +6,7 @@ import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.TransactionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
@@ -20,6 +21,10 @@ public interface TransactionService {
     List<Transaction> getByUser(User user);
 
     Transaction getById(int id);
+
+    List<Transaction> findByStatus(Status status);
+
+    Page<Transaction> findBySpecification(Specification<Transaction> spec, Pageable pageable);
 
     List<Transaction> findAll();
 

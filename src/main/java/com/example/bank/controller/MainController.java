@@ -25,7 +25,7 @@ public class MainController {
 
     @GetMapping("/admin/home")
     public String mainPageForAdmin() {
-        return "redirect:/admin/chats";
+        return "redirect:/admin/transactions";
     }
 
     @GetMapping(value = "getImage", produces = MediaType.IMAGE_JPEG_VALUE)
