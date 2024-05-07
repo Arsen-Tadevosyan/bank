@@ -70,7 +70,8 @@
                             </div>
                         </div>
 
-                        <form action="/user/register" method="POST" style="max-width: 600px; margin: auto;">
+                        <form action="/user/register" method="POST" enctype="multipart/form-data"
+                              style="max-width: 600px; margin: auto;">
                             <span style="color: red; margin-left: 380px; font-size: 20px;" th:if="${msg != null}"
                                   th:text="${msg}"></span>
                             <div class="row">
@@ -114,6 +115,12 @@
                                         <label for="phone">Your Phone <span>*</span></label>
                                         <input class="form-control" id="phone" type="tel" name="phone"
                                                placeholder="Your Phone here">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        Your Photo<span>*</span>
+                                        <input type="file" name="picture">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
