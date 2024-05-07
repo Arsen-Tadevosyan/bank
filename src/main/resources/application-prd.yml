@@ -16,3 +16,11 @@ logging:
   logback:
     rollingpolicy:
       max-file-size:
+servlet:
+  multipart:
+     max-file-size:
+     max-request-size:
+bank:
+  picture:
+    upload:
+     directory:

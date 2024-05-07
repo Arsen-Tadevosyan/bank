@@ -14,6 +14,7 @@ import com.example.bank.service.impl.SendMailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -43,6 +47,9 @@ public class UserController {
 
     private final SendMailService sendMailService;
 
+    @Value("${picture.upload.directory}")
+    private String uploadDirectory;
+
     @GetMapping("/user/register")
     public String registerPage(@RequestParam(value = "msg", required = false) String msg, ModelMap modelMap) {
         if (msg != null && !msg.isEmpty()) {
@@ -59,7 +66,8 @@ public class UserController {
                            @RequestParam(value = "email", required = false) String email,
                            @RequestParam(value = "password", required = false) String password,
                            @RequestParam(value = "age", required = false) String stringAge,
-                           @RequestParam(value = "phone", required = false) String phone) {
+                           @RequestParam(value = "phone", required = false) String phone,
+                           @RequestParam(value = "picture", required = false) MultipartFile multipartFile) throws IOException {
         if (email == null || email.trim().isEmpty() ||
                 password == null || password.trim().isEmpty()) {
             return "redirect:/user/register?msg=Missing required fields";
@@ -85,6 +93,12 @@ public class UserController {
         if (age < 18) {
             return "redirect:/user/register?msg=Age Is Young";
         }
+        String picName = "";
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            picName = System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename();
+            File file = new File(uploadDirectory, picName);
+            multipartFile.transferTo(file);
+        }
         User user = new User();
         user.setName(name);
         user.setSurname(surname);
@@ -92,15 +106,13 @@ public class UserController {
         user.setPassword(password);
         user.setAge(age);
         user.setPhone(phone);
-
-
+        user.setPicName(picName);
         if (userService.findByEmail(email).isEmpty()) {
             userService.register(user, moneyType);
             return "redirect:/user/verification";
         } else {
             return "redirect:/user/register?msg=Incorrect Input";
         }
-
     }
 
     private boolean isValidEmail(String email) {
