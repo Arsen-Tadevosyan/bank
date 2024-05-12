@@ -22,7 +22,6 @@ public interface TransactionService {
 
     Transaction getById(int id);
 
-    List<Transaction> findAll();
 
     Transaction saveDeposit(User user, double size, int mounts);
 
