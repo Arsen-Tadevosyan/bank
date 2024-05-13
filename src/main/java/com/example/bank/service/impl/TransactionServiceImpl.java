@@ -194,6 +194,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findByTransactionTypeAndStatus(transactionType, status);
     }
 
+
      @Override
     public Page<Transaction> findBySpecification(Specification<Transaction> specification, Pageable pageable) {
         return transactionRepository.findAll(specification, pageable);

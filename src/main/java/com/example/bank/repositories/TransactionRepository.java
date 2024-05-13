@@ -23,5 +23,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 
     List<Transaction> findByTransactionTypeAndStatus(TransactionType transactionType, Status status);
 
+
     List<Transaction> findByStatus( Status status);
+
 }

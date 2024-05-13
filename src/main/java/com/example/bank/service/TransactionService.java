@@ -23,11 +23,13 @@ public interface TransactionService {
     Transaction getById(int id);
 
 
+
     Transaction saveDeposit(User user, double size, int mounts);
 
     Transaction saveFreeTimeDeposit(User user, double size);
 
     List<Transaction> findByTransactionTypeAndStatus(TransactionType transactionType, Status status);
+ 
     List<Transaction> findByStatus(Status status);
 
     Page<Transaction> findBySpecification(Specification<Transaction> spec, Pageable pageable);
