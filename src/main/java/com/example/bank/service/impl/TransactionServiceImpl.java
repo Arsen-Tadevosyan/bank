@@ -194,86 +194,10 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findByTransactionTypeAndStatus(transactionType, status);
     }
 
+
      @Override
     public Page<Transaction> findBySpecification(Specification<Transaction> specification, Pageable pageable) {
         return transactionRepository.findAll(specification, pageable);
     }
 
-
-    @Override
-    @Transactional
-    public Transaction saveDeposit(User user, double size, int mounts) {
-        if (mounts < 12 || mounts > 96) {
-            return null;
-        }
-        Card card = cardService.gatByUser(user);
-        if (card.getBalance() < size) {
-            return null;
-        }
-        if (transactionRepository.countByUserAndTransactionTypeAndStatus(user, TransactionType.DEPOSIT, Status.DURING) >= 3) {
-            return null;
-        }
-        cardService.save(card);
-        notificationService.save(Notification.builder()
-                .notificationType(NotificationType.INFO)
-                .user(user)
-                .dateDispatch(LocalDateTime.now())
-                .message("   Your Deposit has been confirmed  +" + size + "|" + card.getMoneyType().name())
-                .build());
-        double balance = card.getBalance();
-        card.setBalance(balance - size);
-        cardService.save(card);
-        return transactionRepository.save(Transaction.builder()
-                .size(size)
-                .moneyType(card.getMoneyType())
-                .percentage(2)
-                .issueDate(LocalDate.now())
-                .finishDate(LocalDate.now().plusMonths(mounts))
-                .remainingMoney(size)
-                .status(Status.DURING)
-                .user(user)
-                .months(mounts)
-                .transactionType(TransactionType.DEPOSIT)
-                .build());
-
-    }
-
-    @Override
-    public Transaction saveFreeTimeDeposit(User user, double size) {
-        Card card = cardService.gatByUser(user);
-        if (card.getBalance() < size) {
-            return null;
-        }
-        if (transactionRepository.countByUserAndTransactionTypeAndStatus(user, TransactionType.DEPOSIT, Status.DURING) >= 3) {
-            return null;
-        }
-        cardService.save(card);
-        notificationService.save(Notification.builder()
-                .notificationType(NotificationType.INFO)
-                .user(user)
-                .dateDispatch(LocalDateTime.now())
-                .message("   Your Deposit has been confirmed  +" + size + "|" + card.getMoneyType().name())
-                .build());
-        double balance = card.getBalance();
-        card.setBalance(balance - size);
-        cardService.save(card);
-        return transactionRepository.save(Transaction.builder()
-                .size(size)
-                .moneyType(card.getMoneyType())
-                .percentage(1)
-                .issueDate(LocalDate.now())
-                .finishDate(LocalDate.now())
-                .remainingMoney(size)
-                .status(Status.DURING)
-                .user(user)
-                .months(0)
-                .transactionType(TransactionType.DEPOSIT)
-                .build());
-
-    }
-
-    @Override
-    public List<Transaction> findByTransactionTypeAndStatus(TransactionType transactionType, Status status) {
-        return transactionRepository.findByTransactionTypeAndStatus(transactionType, status);
-    }
 }
