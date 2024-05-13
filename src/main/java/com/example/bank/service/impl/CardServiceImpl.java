@@ -42,7 +42,8 @@ public class CardServiceImpl implements CardService {
         Card card = gatByUser(user);
         double balance = card.getBalance();
         MoneyType cardMoneyType = card.getMoneyType();
-        double value = countCurrency.countCurrency(size, moneyType, cardMoneyType);
+        double currency = countCurrency.countCurrency(size, moneyType, cardMoneyType);
+        double value = currency * size;
         card.setBalance(value + balance);
         cardRepository.save(card);
         return true;

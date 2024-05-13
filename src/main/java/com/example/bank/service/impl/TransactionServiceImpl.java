@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,8 +113,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> findAll() {
-        return transactionRepository.findAll();
+    public List<Transaction> findByStatus(Status status) {
+        return transactionRepository.findByStatus(status);
     }
 
     @Override
@@ -192,4 +193,11 @@ public class TransactionServiceImpl implements TransactionService {
     public List<Transaction> findByTransactionTypeAndStatus(TransactionType transactionType, Status status) {
         return transactionRepository.findByTransactionTypeAndStatus(transactionType, status);
     }
+
+
+     @Override
+    public Page<Transaction> findBySpecification(Specification<Transaction> specification, Pageable pageable) {
+        return transactionRepository.findAll(specification, pageable);
+    }
+
 }
