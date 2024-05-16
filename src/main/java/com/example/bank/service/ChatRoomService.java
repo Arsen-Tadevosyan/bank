@@ -1,19 +1,15 @@
 package com.example.bank.service;
 
 import com.example.bank.entity.ChatRoom;
-import com.example.bank.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ChatRoomService {
 
-    ChatRoom save(ChatRoom chatRoom);
+    Optional<String> getChatRoomId(String senderId, String recipientId, boolean createNewRoomIfNotExists);
 
-    ChatRoom getByUser(User user);
+    String createChatId(String senderId, String recipientId);
 
-    ChatRoom getById(int id);
-
-    List<ChatRoom> getByAdmin(User admin);
-
-    ChatRoom getByAdminAndUser(User admin, User user);
+    List<ChatRoom> findByRecipientId(String email);
 }
