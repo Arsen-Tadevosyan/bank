@@ -18,4 +18,6 @@ public interface UserService {
     User findByToken(int token);
 
     User save(User user);
+
+    User findRandomAdmin();
 }
