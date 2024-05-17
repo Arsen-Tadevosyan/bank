@@ -1,7 +1,6 @@
 package com.example.bank.entity;
 
 
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
