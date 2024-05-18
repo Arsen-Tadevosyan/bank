@@ -4,7 +4,6 @@ import com.example.bank.dto.UserDto;
 import com.example.bank.entity.ChatRoom;
 import com.example.bank.entity.User;
 import com.example.bank.entity.enums.MoneyType;
-import com.example.bank.entity.enums.UserRole;
 import com.example.bank.security.CurrentUser;
 import com.example.bank.service.CardService;
 import com.example.bank.service.ChatRoomService;
@@ -133,10 +132,7 @@ public class UserController {
     public String loginSuccess(@AuthenticationPrincipal CurrentUser currentUser) {
         User user = currentUser.getUser();
         if (!userService.findByEmail(user.getEmail()).isEmpty()) {
-            if (user.getUserRole() == UserRole.USER) {
-                return "redirect:/";
-            }
-            return "redirect:/admin/home";
+            return "redirect:/";
         }
         return "redirect:/user/login";
     }
