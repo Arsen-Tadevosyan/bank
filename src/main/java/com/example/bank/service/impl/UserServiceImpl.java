@@ -72,6 +72,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findRandomAdmin() {
+        return userRepository.findRandomUserByUserRole(UserRole.ADMIN);
+    }
+
+
+    @Override
     public User findByToken(int token) {
         return userRepository.findByToken(token);
     }

@@ -1,18 +1,13 @@
 package com.example.bank.service.impl;
 
 import com.example.bank.entity.ChatRoom;
-
-import com.example.bank.entity.User;
-
-import com.example.bank.entity.enums.UserRole;
 import com.example.bank.repositories.ChatRoomRepository;
 import com.example.bank.service.ChatRoomService;
-import com.example.bank.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 
 
 @Service
@@ -20,49 +15,52 @@ import java.util.Random;
 public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
-    private final UserService userService;
 
     @Override
-    public ChatRoom save(ChatRoom chatRoom) {
-        return chatRoomRepository.save(chatRoom);
+    public Optional<String> getChatRoomId(
+            String senderId,
+            String recipientId,
+            boolean createNewRoomIfNotExists
+    ) {
+        return chatRoomRepository
+                .findBySenderIdAndRecipientId(senderId, recipientId)
+                .map(ChatRoom::getChatId)
+                .or(() -> {
+                    if (createNewRoomIfNotExists) {
+                        var chatId = createChatId(senderId, recipientId);
+                        return Optional.of(chatId);
+                    }
+
+                    return Optional.empty();
+                });
     }
 
     @Override
-    public ChatRoom getByUser(User user) {
-        if (user.getUserRole().equals(UserRole.ADMIN)) {
-            return chatRoomRepository.getByAdmin(user);
-        }
-        ChatRoom byUser = chatRoomRepository.findByUser(user);
-        if (byUser != null) {
-            return byUser;
-        }
-        List<User> admins = userService.findByUserRole(UserRole.ADMIN);
-        if (admins.isEmpty()) {
-            return null;
-        }
-        Random random = new Random();
-        int randomIndex = random.nextInt(admins.size());
-        User randomAdmin = admins.get(randomIndex);
-        return  chatRoomRepository.save( ChatRoom.builder()
-                .user(user)
-                .admin(randomAdmin)
-                .build());
-    }
-    @Override
-    public ChatRoom getById(int id) {
-        return chatRoomRepository.findById(id).orElse(null);
+    public String createChatId(String senderId, String recipientId) {
+        String chatId = String.format("%s_%s", senderId, recipientId);
+
+        ChatRoom senderRecipient = ChatRoom
+                .builder()
+                .chatId(chatId)
+                .senderId(senderId)
+                .recipientId(recipientId)
+                .build();
+
+        ChatRoom recipientSender = ChatRoom
+                .builder()
+                .chatId(chatId)
+                .senderId(recipientId)
+                .recipientId(senderId)
+                .build();
+
+        chatRoomRepository.save(senderRecipient);
+        chatRoomRepository.save(recipientSender);
+
+        return chatId;
     }
 
     @Override
-    public List<ChatRoom> getByAdmin(User admin) {
-        return chatRoomRepository.findByAdmin(admin);
+    public List<ChatRoom> findByRecipientId(String email) {
+        return chatRoomRepository.findByRecipientId(email);
     }
-
-    @Override
-    public ChatRoom getByAdminAndUser(User admin, User user) {
-        ChatRoom chat = chatRoomRepository.findByAdminAndUser(admin,user);
-            return chat;
-    }
-
-
 }

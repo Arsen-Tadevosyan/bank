@@ -1,13 +1,11 @@
 package com.example.bank.controller;
 
 
-
+import com.example.bank.dto.CreditRequestDto;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.Repay;
 import com.example.bank.entity.Transaction;
 import com.example.bank.entity.User;
-import com.example.bank.entity.Notification;
-
 import com.example.bank.entity.enums.NotificationType;
 import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.StatusRepay;
@@ -22,8 +20,8 @@ import com.example.bank.entity.Notification;
 import com.example.bank.entity.enums.NotificationType;
 import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.TransactionType;
+import com.example.bank.entity.Notification;
 import com.example.bank.security.CurrentUser;
-
 import com.example.bank.service.CardService;
 import com.example.bank.service.NotificationService;
 import com.example.bank.service.RepayService;
