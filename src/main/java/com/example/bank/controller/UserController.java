@@ -3,6 +3,7 @@ package com.example.bank.controller;
 import com.example.bank.entity.ChatRoom;
 import com.example.bank.entity.Message;
 import com.example.bank.entity.User;
+import com.example.bank.entity.enums.Gender;
 import com.example.bank.entity.enums.MoneyType;
 import com.example.bank.entity.enums.UserRole;
 import com.example.bank.security.CurrentUser;
@@ -67,6 +68,7 @@ public class UserController {
                            @RequestParam(value = "password", required = false) String password,
                            @RequestParam(value = "age", required = false) String stringAge,
                            @RequestParam(value = "phone", required = false) String phone,
+                           @RequestParam(value = "gender", required = false) String genderString,
                            @RequestParam(value = "picture", required = false) MultipartFile multipartFile) throws IOException {
         if (email == null || email.trim().isEmpty() ||
                 password == null || password.trim().isEmpty()) {
@@ -80,6 +82,12 @@ public class UserController {
             moneyType = MoneyType.valueOf(moneyTypeString.toUpperCase());
         } catch (IllegalArgumentException e) {
             return "redirect:/user/register?msg=Invalid money type";
+        }
+        Gender gender;
+        try {
+            gender = Gender.valueOf(genderString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return "redirect:/user/register?msg=Invalid gender";
         }
         if (phone == null && phone.isEmpty()) {
             return "redirect:/user/register?msg=Phone Is Empty";
@@ -106,6 +114,7 @@ public class UserController {
         user.setPassword(password);
         user.setAge(age);
         user.setPhone(phone);
+        user.setGender(gender);
         user.setPicName(picName);
         if (userService.findByEmail(email).isEmpty()) {
             userService.register(user, moneyType);
