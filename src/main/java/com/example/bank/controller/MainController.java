@@ -1,8 +1,11 @@
 package com.example.bank.controller;
 
+import com.example.bank.entity.enums.UserRole;
+import com.example.bank.security.CurrentUser;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,13 +22,11 @@ public class MainController {
     private String uploadDirectory;
 
     @GetMapping("/")
-    public String mainPage() {
-        return "user/home";
-    }
-
-    @GetMapping("/admin/home")
-    public String mainPageForAdmin() {
-        return "redirect:/admin/transactions";
+    public String mainPage(@AuthenticationPrincipal CurrentUser currentUser) {
+        if (currentUser.getUser().getUserRole() == UserRole.USER) {
+            return "user/home";
+        }
+        return "admin/home";
     }
 
     @GetMapping(value = "getImage", produces = MediaType.IMAGE_JPEG_VALUE)
