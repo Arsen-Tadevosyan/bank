@@ -1,14 +1,19 @@
 package com.example.bank.controller;
 
 import com.example.bank.dto.TransactionFilterDto;
+import com.example.bank.dto.UserFilterDto;
+import com.example.bank.entity.QUser;
 import com.example.bank.entity.Transaction;
+import com.example.bank.entity.User;
 import com.example.bank.service.TransactionService;
+import com.example.bank.service.UserService;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -29,6 +34,7 @@ import java.util.Map;
 public class FilterController {
 
     private final TransactionService transactionService;
+    private final EntityManager entityManager;
 
 
     @GetMapping("/filterTransactions")
@@ -57,6 +63,48 @@ public class FilterController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/filterUsers")
+    public ResponseEntity<Page<User>> filterUsers(UserFilterDto userFilterDto,
+                                                  @RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+        BooleanExpression predicate = buildPredicate(userFilterDto);
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        QueryResults<User> queryResults = queryFactory.selectFrom(QUser.user)
+                .where(predicate)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        Page<User> userPage = new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
+
+        return ResponseEntity.ok(userPage);
+    }
+
+    private BooleanExpression buildPredicate(UserFilterDto userFilterDto) {
+        QUser qUser = QUser.user;
+        BooleanExpression predicate = qUser.isNotNull();
+
+        if (userFilterDto.getName() != null && !userFilterDto.getName().isEmpty()) {
+            predicate = predicate.and(qUser.name.containsIgnoreCase(userFilterDto.getName()));
+        }
+        if (userFilterDto.getSurname() != null && !userFilterDto.getSurname().isEmpty()) {
+            predicate = predicate.and(qUser.surname.containsIgnoreCase(userFilterDto.getSurname()));
+        }
+        if (userFilterDto.getEmail() != null && !userFilterDto.getEmail().isEmpty()) {
+            predicate = predicate.and(qUser.email.containsIgnoreCase(userFilterDto.getEmail()));
+        }
+        if (userFilterDto.getMinRating() > 0) {
+            predicate = predicate.and(qUser.rating.goe(userFilterDto.getMinRating()));
+        }
+        if (userFilterDto.getMaxRating() > 0) {
+            predicate = predicate.and(qUser.rating.loe(userFilterDto.getMaxRating()));
+        }
+        return predicate;
+    }
+
 
     private Specification<Transaction> buildSpecification(TransactionFilterDto filterDto) {
         return (root, query, criteriaBuilder) -> {

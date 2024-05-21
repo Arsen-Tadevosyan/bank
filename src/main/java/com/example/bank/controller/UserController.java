@@ -1,21 +1,20 @@
 package com.example.bank.controller;
 
+import com.example.bank.dto.UserDto;
 import com.example.bank.entity.ChatRoom;
-import com.example.bank.entity.Message;
 import com.example.bank.entity.User;
 import com.example.bank.entity.enums.Gender;
 import com.example.bank.entity.enums.MoneyType;
-import com.example.bank.entity.enums.UserRole;
 import com.example.bank.security.CurrentUser;
 import com.example.bank.service.CardService;
 import com.example.bank.service.ChatRoomService;
-import com.example.bank.service.MessageService;
 import com.example.bank.service.UserService;
 import com.example.bank.service.impl.SendMailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -28,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -42,8 +42,6 @@ public class UserController {
     private final ChatRoomService chatRoomService;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
-    private final MessageService messageService;
-
     private final CardService cardService;
 
     private final SendMailService sendMailService;
@@ -143,10 +141,7 @@ public class UserController {
     public String loginSuccess(@AuthenticationPrincipal CurrentUser currentUser) {
         User user = currentUser.getUser();
         if (!userService.findByEmail(user.getEmail()).isEmpty()) {
-            if (user.getUserRole() == UserRole.USER) {
-                return "redirect:/";
-            }
-            return "redirect:/admin/home";
+            return "redirect:/";
         }
         return "redirect:/user/login";
     }
@@ -158,13 +153,13 @@ public class UserController {
         return "/user/profile";
     }
 
-    @GetMapping("/contactUs")
-    public String contactUsPage(@AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap) {
-        ChatRoom chatRoom = chatRoomService.getByUser(currentUser.getUser());
-        List<Message> messages = messageService.getByChatRoom(chatRoom);
-        modelMap.addAttribute("messages", messages);
-        return "user/contactUs";
-    }
+//    @GetMapping("/contactUs")
+//    public String contactUsPage(@AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap) {
+//        ChatRoom chatRoom = chatRoomService.getByUser(currentUser.getUser());
+//        List<Message> messages = messageService.getByChatRoom(chatRoom);
+//        modelMap.addAttribute("messages", messages);
+//        return "user/contactUs";
+//    }
 
 
     @GetMapping("/user/verification")
@@ -197,6 +192,9 @@ public class UserController {
         user.setActive(true);
         user.setToken(0);
         userService.save(user);
+        User randomAdmin = userService.findRandomAdmin();
+        String chatId = chatRoomService.createChatId(user.getEmail(), randomAdmin.getEmail());
+        log.info("ChatRoom already crated with {}", chatId);
         return "redirect:/user/verification?msg=Verification Successes You Can Login";
     }
 
@@ -252,5 +250,18 @@ public class UserController {
         user.get().setPassword(passwordEncoder.encode(newPassword));
         userService.save(user.get());
         return "redirect:/user/login?msg=Password Updated";
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDto>> findConnectedUsers(@AuthenticationPrincipal CurrentUser currentUser) {
+        List<ChatRoom> byRecipientId = chatRoomService.findByRecipientId(currentUser.getUser().getEmail());
+        List<UserDto> users = new ArrayList<>();
+        for (ChatRoom chatRoom : byRecipientId) {
+            String senderId = chatRoom.getSenderId();
+            users.add(UserDto.builder()
+                    .nickName(senderId)
+                    .build());
+        }
+        return ResponseEntity.ok(users);
     }
 }
