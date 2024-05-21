@@ -34,3 +34,6 @@ servlet:
 picture:
   upload:
     directory:
+contracts:
+  upload:
+    directory:
