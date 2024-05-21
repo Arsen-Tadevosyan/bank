@@ -6,30 +6,23 @@ import com.example.bank.entity.Card;
 import com.example.bank.entity.Repay;
 import com.example.bank.entity.Transaction;
 import com.example.bank.entity.User;
-import com.example.bank.entity.enums.NotificationType;
-import com.example.bank.entity.enums.Status;
-import com.example.bank.entity.enums.StatusRepay;
-import com.example.bank.dto.CreditRequestDto;
-
-import com.example.bank.entity.Card;
-import com.example.bank.entity.Repay;
-import com.example.bank.entity.Transaction;
-import com.example.bank.entity.User;
 import com.example.bank.entity.Notification;
-
 import com.example.bank.entity.enums.NotificationType;
 import com.example.bank.entity.enums.Status;
 import com.example.bank.entity.enums.TransactionType;
-import com.example.bank.entity.Notification;
 import com.example.bank.security.CurrentUser;
 import com.example.bank.service.CardService;
 import com.example.bank.service.NotificationService;
 import com.example.bank.service.RepayService;
 import com.example.bank.service.TransactionService;
 import com.example.bank.service.TransferService;
+import com.example.bank.service.impl.SendMailService;
+import com.example.bank.util.FileUtil;
 import io.micrometer.common.util.StringUtils;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -46,6 +39,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -64,6 +58,11 @@ public class TransactionController {
     private final RepayService repayService;
     private final NotificationService notificationService;
     private final TransferService transferService;
+    private final FileUtil fileUtil;
+    private final SendMailService sendMailService;
+
+    @Value("${contract.upload.directory}")
+    private String uploadDirectory;
 
     @GetMapping("/transaction/transfer")
     public String transferMoneyPage(@RequestParam(value = "msg", required = false) String msg, ModelMap modelMap) {
@@ -147,10 +146,19 @@ public class TransactionController {
             return "redirect:/transaction/personalCredit";
         }
         Transaction transaction = transactionService.save(size, months, user, TransactionType.PERSONAL);
+
         if (transaction == null) {
             redirectAttributes.addAttribute("msg", "Your request was declined");
             return "redirect:/transaction/personalCredit";
         }
+        //Start Send Contract File NB
+        File file = fileUtil.contractFile(user, transaction);
+        try {
+            sendMailService.sendContractFile(user.getEmail(), "Contract", user, "mail/contract", file);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        //Finish Send Contract
         repayService.save(transaction);
         redirectAttributes.addAttribute("msg", "Your transaction has been confirmed");
         return "redirect:/transaction/personalCredit";

@@ -1,5 +1,6 @@
 package com.example.bank.entity;
 
+import com.example.bank.entity.enums.Gender;
 import com.example.bank.entity.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -35,4 +36,7 @@ public class User {
     private String phone;
 
     private String picName;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 }
