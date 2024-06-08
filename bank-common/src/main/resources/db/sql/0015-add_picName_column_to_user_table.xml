@@ -1,0 +1,14 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+
+    <changeSet id="add_picName_column_to_user_table" author="nbaghdasaryan">
+        <sql>
+            ALTER TABLE user
+                ADD pic_name VARCHAR(255);
+        </sql>
+    </changeSet>
+
+
+</databaseChangeLog>

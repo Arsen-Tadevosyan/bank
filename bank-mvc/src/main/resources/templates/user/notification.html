@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <!-- metas -->
+    <meta charset="utf-8">
+    <meta name="author" content="Chitrakoot Web">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="Banking and Loan Responsive Template">
+    <meta name="description" content="Loan- Banking and Loan Responsive Template">
+
+    <!-- title  -->
+    <title>Loan- Banking and Loan Responsive Template</title>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="img/logos/favicon.png">
+    <link rel="apple-touch-icon" href="img/logos/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/logos/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/logos/apple-touch-icon-114x114.png">
+
+    <!-- plugins -->
+    <link rel="stylesheet" href="css/plugins.css">
+
+    <!-- search css -->
+    <link rel="stylesheet" href="search/search.css">
+
+    <!-- quform css -->
+    <link rel="stylesheet" href="quform/css/base.css">
+
+    <!-- theme core css -->
+    <link href="css/styles.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- PAGE LOADING
+================================================== -->
+<div id="preloader"></div>
+
+<!-- MAIN WRAPPER
+================================================== -->
+<div class="main-wrapper">
+
+    <!-- HEADER
+    ================================================== -->
+    <th:block th:include="/user/fragment/headerFragment::userInfo"/>
+
+    <!-- PAGE TITLE
+    ================================================== -->
+    <section class="page-title-section top-position1 bg-img cover-background" data-overlay-dark="55"
+             data-background="img/bg/page-title.jpg">
+        <div class="container">
+
+        </div>
+    </section>
+
+    <!-- ALERTS
+    ================================================== -->
+    <section>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+
+                    <div class="position-relative elements-block">
+
+                        <div class="inner-title">
+                            <div class="main-title title-left mb-0">Notification
+                                <span class="line-left"></span>
+                            </div>
+                        </div>
+
+                        <div th:each="notification : ${notifications}"
+                             th:if="${notification.notificationType == notification.notificationType.WARN}"
+                             class="alert alert-warning alert-dismissible">
+                            <strong>Warning!</strong> <span th:text="${notification.message}"></span>
+                            <a class="btn-close"
+                               th:href="@{'/notification/delete/'+${notification.id}}"></a>
+                        </div>
+
+                        <div th:each="notification : ${notifications}"
+                             th:if="${notification.notificationType == notification.notificationType.INFO}"
+                             class="alert alert-info alert-dismissible">
+                            <strong>Info!</strong> <span th:text="${notification.message}"></span>
+                            <a class="btn-close"
+                               th:href="@{'/notification/delete/'+${notification.id}}"></a>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER
+    ================================================== -->
+    <th:block th:include="/user/fragment/footerFragment::userFoot"/>
+
+
+</div>
+
+
+
+
+<!-- start scroll to top -->
+<a href="#!" class="scroll-to-top"><i class="fas fa-angle-up" aria-hidden="true"></i></a>
+<!-- end scroll to top -->
+
+<!-- all js include start -->
+
+<!-- jQuery -->
+<script src="js/jquery.min.js"></script>
+
+<!-- popper js -->
+<script src="js/popper.min.js"></script>
+
+<!-- bootstrap -->
+<script src="js/bootstrap.min.js"></script>
+
+<!-- jquery -->
+<script src="js/core.min.js"></script>
+
+<!-- Search -->
+<script src="search/search.js"></script>
+
+<!-- custom scripts -->
+<script src="js/main.js"></script>
+
+<!-- form plugins js -->
+<script src="quform/js/plugins.js"></script>
+
+<!-- form scripts js -->
+<script src="quform/js/scripts.js"></script>
+
+<!-- all js include end -->
+</body>
+
+</html>
