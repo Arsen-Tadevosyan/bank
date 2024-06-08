@@ -184,7 +184,14 @@ public class TransactionController {
             redirectAttributes.addAttribute("msg", "Your request was declined");
             return "redirect:/transaction/personalCredit";
         }
-
+        //Start Send Contract File NB
+        File file = fileUtil.contractFile(user, transaction);
+        try {
+            sendMailService.sendContractFile(user.getEmail(), "Contract", user, "mail/contract", file);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        //Finish Send Contract
         repayService.save(transaction);
         redirectAttributes.addAttribute("msg", "Your transaction has been confirmed");
         return "redirect:/transaction/personalCredit";
@@ -226,6 +233,14 @@ public class TransactionController {
             redirectAttributes.addAttribute("msg", "Your request was declined");
             return "redirect:/transaction/personalCredit";
         }
+        //Start Send Contract File NB
+        File file = fileUtil.contractFile(user, transaction);
+        try {
+            sendMailService.sendContractFile(user.getEmail(), "Contract", user, "mail/contract", file);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        //Finish Send Contract
         repayService.save(transaction);
         redirectAttributes.addAttribute("msg", "Your transaction has been confirmed");
         return "redirect:/transaction/personalCredit";
