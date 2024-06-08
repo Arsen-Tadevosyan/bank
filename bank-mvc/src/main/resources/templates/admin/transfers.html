@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- metas -->
+    <meta charset="utf-8">
+    <meta name="author" content="Chitrakoot Web">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="Banking and Loan Responsive Template">
+    <meta name="description" content="Loan- Banking and Loan Responsive Template">
+
+    <!-- title  -->
+    <title>Transfer List</title>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="img/logos/favicon.png">
+    <link rel="apple-touch-icon" href="img/logos/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/logos/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/logos/apple-touch-icon-114x114.png">
+
+    <!-- plugins -->
+    <link rel="stylesheet" href="/css/plugins.css">
+
+    <!-- search css -->
+    <link rel="stylesheet" href="/search/search.css">
+
+    <!-- quform css -->
+    <link rel="stylesheet" href="/quform/css/base.css">
+
+    <!-- theme core css -->
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+<!-- PAGE LOADING -->
+<div id="preloader"></div>
+
+<!-- MAIN WRAPPER -->
+<div class="main-wrapper">
+    <!-- HEADER -->
+    <th:block th:include="/admin/fragment/headerFragment::adminInfo"/>
+
+    <!-- PAGE TITLE -->
+    <section class="page-title-section top-position1 bg-img cover-background"
+             data-background="/img/about/img_3.png">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Transfers History</h1>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- TABLES -->
+    <section>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="position-relative elements-block">
+                        <div class="inner-title">
+                            <div class="main-title title-left mb-0">
+                                Filter <span class="line-left"></span>
+                            </div>
+                        </div>
+
+                        <!-- FILTER FORM -->
+                        <form id="filterForm" method="GET"
+                              style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div style="flex: 1; margin-right: 10px;">
+                                    <div style="flex: 1; margin-right: 10px; margin-bottom: 10px;">
+                                        <label for="from">From:</label>
+                                        <input type="email" id="from" name="from" step="1">
+                                    </div>
+                                    <div style="flex: 1; margin-left: 270px; margin-top: -75px; margin-bottom: 10px;">
+                                        <label for="to">To:</label>
+                                        <input type="email" id="to" name="to" step="1">
+                                    </div>
+                                    <div style="flex: 1; margin-left: 160px; margin-bottom: 10px;">
+                                        <label for="moneyType">Money Type:</label>
+                                        <select class="select" id="moneyType" name="moneyType">
+                                            <option value="">-- Money Type --</option>
+                                            <option value="USD">USD</option>
+                                            <option value="AMD">AMD</option>
+                                            <option value="RUB">RUB</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <div style="flex: 1; margin-right: 10px;">
+                                    <label for="minSize">Minimum Size:</label>
+                                    <input type="number" id="minSize" name="minSize">
+                                </div>
+                                <div style="flex: 1; margin-right: 10px;">
+                                    <label for="maxSize">Maximum Size:</label>
+                                    <input type="number" id="maxSize" name="maxSize" >
+                                </div>
+                            </div>
+                        </form>
+
+
+                        <!-- TRANSACTION TABLE -->
+                        <div id="userTable" class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                <tr>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Money Type</th>
+                                    <th>Size</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <ul id="pagination" class="pagination"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer1 bg-img cover-background" data-overlay-dark="8" data-background="img/bg/footer-bg.jpg">
+        <!-- Footer content goes here -->
+    </footer>
+</div>
+
+<!-- JavaScript libraries -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/core.min.js"></script>
+<script src="/search/search.js"></script>
+<script src="/quform/js/plugins.js"></script>
+<script src="/quform/js/scripts.js"></script>
+<script src="/js/main.js"></script>
+<!-- Custom JavaScript -->
+<script>
+    $(document).ready(function() {
+        function fetchTransfers(page = 0) {
+            const from = $('#from').val();
+            const to = $('#to').val();
+            const moneyType = $('#moneyType').val();
+            const minSize = $('#minSize').val();
+            const maxSize = $('#maxSize').val();
+
+            $.ajax({
+                url: '/filterTransfers',
+                method: 'GET',
+                data: {
+                    from: from,
+                    to: to,
+                    moneyType: moneyType,
+                    minSize: minSize,
+                    maxSize: maxSize,
+                    page: page
+                },
+                success: function(response) {
+                    const transfers = response.content;
+                    const currentPage = response.currentPage;
+                    const totalItems = response.totalItems;
+                    const totalPages = response.totalPages;
+
+                    let tableContent = '';
+                    transfers.forEach(transfer => {
+                        tableContent += `
+                    <tr>
+                        <td>${transfer.from.email}</td>
+                        <td>${transfer.to.email}</td>
+                        <td>${transfer.moneyType}</td>
+                        <td>${transfer.size}</td>
+                    </tr>
+                    `;
+                    });
+                    $('tbody').html(tableContent);
+
+                    let paginationContent = '';
+                    for (let i = 0; i < totalPages; i++) {
+                        paginationContent += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#">${i + 1}</a>
+                    </li>`;
+                    }
+                    $('#pagination').html(paginationContent);
+                }
+            });
+        }
+
+        $('#from, #to, #moneyType, #minSize, #maxSize').on('input change', function() {
+            fetchTransfers();
+        });
+
+        $('#pagination').on('click', '.page-link', function(e) {
+            e.preventDefault();
+            const page = $(this).text() - 1;
+            fetchTransfers(page);
+        });
+
+        fetchTransfers(); // Initial load
+    });
+
+</script>
+</body>
+
+</html>

@@ -2,14 +2,18 @@ package com.example.bankrest.controller;
 
 
 import com.example.bankcommon.dto.TransactionFilterDto;
+import com.example.bankcommon.dto.TransferFilterDto;
+import com.example.bankcommon.entity.QTransfer;
 import com.example.bankcommon.entity.Transaction;
+import com.example.bankcommon.entity.Transfer;
 import com.example.bankcommon.service.TransactionService;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -30,6 +34,7 @@ import java.util.Map;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final EntityManager entityManager;
 
 
     @GetMapping("/filterTransactions")
@@ -58,7 +63,48 @@ public class TransactionController {
 
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/filterTransfers")
+    public ResponseEntity<Page<Transfer>> filterTransfers(TransferFilterDto transferFilterDto,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+        BooleanExpression predicate = transfersFilter(transferFilterDto);
 
+        Pageable pageable = PageRequest.of(page, size);
+
+        QueryResults<Transfer> queryResults = queryFactory.selectFrom(QTransfer.transfer)
+                .where(predicate)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        Page<Transfer> transferPage = new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
+
+        return ResponseEntity.ok(transferPage);
+    }
+
+    private BooleanExpression transfersFilter(TransferFilterDto transferFilterDto) {
+        QTransfer qTransfer = QTransfer.transfer;
+        BooleanExpression predicate = qTransfer.isNotNull();
+
+
+
+        if (transferFilterDto.getFrom() != null && !transferFilterDto.getFrom().isEmpty()) {
+            predicate = predicate.and(qTransfer.from.email.containsIgnoreCase(transferFilterDto.getFrom()));
+        }
+        if (transferFilterDto.getTo() != null && !transferFilterDto.getTo().isEmpty()) {
+            predicate = predicate.and(qTransfer.to.email.containsIgnoreCase(transferFilterDto.getTo()));
+        }
+        if (transferFilterDto.getMoneyType() != null && !transferFilterDto.getMoneyType().equals(null)) {
+            predicate = predicate.and(qTransfer.moneyType.stringValue().containsIgnoreCase(String.valueOf(transferFilterDto.getMoneyType())));
+        }
+        if (transferFilterDto.getMinSize() != null && transferFilterDto.getMinSize() > 0) {
+            predicate = predicate.and(qTransfer.size.goe(transferFilterDto.getMinSize().doubleValue()));
+        }
+        if (transferFilterDto.getMaxSize() != null && transferFilterDto.getMaxSize() > 0) {
+            predicate = predicate.and(qTransfer.size.loe(transferFilterDto.getMaxSize().doubleValue()));
+        }
+        return predicate;
+    }
 
     private Specification<Transaction> buildSpecification(TransactionFilterDto filterDto) {
         return (root, query, criteriaBuilder) -> {

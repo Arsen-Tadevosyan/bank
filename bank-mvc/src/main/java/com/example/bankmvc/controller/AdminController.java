@@ -20,4 +20,8 @@ public class AdminController {
         return "admin/users";
     }
 
+    @GetMapping("/transfers")
+    public String showCreditList(){
+        return "admin/transfers";
+    }
 }

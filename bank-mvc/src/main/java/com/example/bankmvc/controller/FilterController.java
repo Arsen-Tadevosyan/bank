@@ -2,10 +2,9 @@ package com.example.bankmvc.controller;
 
 
 import com.example.bankcommon.dto.TransactionFilterDto;
+import com.example.bankcommon.dto.TransferFilterDto;
 import com.example.bankcommon.dto.UserFilterDto;
-import com.example.bankcommon.entity.QUser;
-import com.example.bankcommon.entity.Transaction;
-import com.example.bankcommon.entity.User;
+import com.example.bankcommon.entity.*;
 import com.example.bankcommon.service.TransactionService;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -83,6 +82,48 @@ public class FilterController {
         return ResponseEntity.ok(userPage);
     }
 
+    @GetMapping("/filterTransfers")
+    public ResponseEntity<Page<Transfer>> filterTransfers(TransferFilterDto transferFilterDto,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+        BooleanExpression predicate = transfersFilter(transferFilterDto);
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        QueryResults<Transfer> queryResults = queryFactory.selectFrom(QTransfer.transfer)
+                .where(predicate)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        Page<Transfer> transferPage = new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
+
+        return ResponseEntity.ok(transferPage);
+    }
+
+    private BooleanExpression transfersFilter(TransferFilterDto transferFilterDto) {
+        QTransfer qTransfer = QTransfer.transfer;
+        BooleanExpression predicate = qTransfer.isNotNull();
+
+
+
+        if (transferFilterDto.getFrom() != null && !transferFilterDto.getFrom().isEmpty()) {
+            predicate = predicate.and(qTransfer.from.email.containsIgnoreCase(transferFilterDto.getFrom()));
+        }
+        if (transferFilterDto.getTo() != null && !transferFilterDto.getTo().isEmpty()) {
+            predicate = predicate.and(qTransfer.to.email.containsIgnoreCase(transferFilterDto.getTo()));
+        }
+        if (transferFilterDto.getMoneyType() != null && !transferFilterDto.getMoneyType().equals(null)) {
+            predicate = predicate.and(qTransfer.moneyType.stringValue().containsIgnoreCase(String.valueOf(transferFilterDto.getMoneyType())));
+        }
+        if (transferFilterDto.getMinSize() != null && transferFilterDto.getMinSize() > 0) {
+            predicate = predicate.and(qTransfer.size.goe(transferFilterDto.getMinSize().doubleValue()));
+        }
+        if (transferFilterDto.getMaxSize() != null && transferFilterDto.getMaxSize() > 0) {
+            predicate = predicate.and(qTransfer.size.loe(transferFilterDto.getMaxSize().doubleValue()));
+        }
+        return predicate;
+    }
     private BooleanExpression buildPredicate(UserFilterDto userFilterDto) {
         QUser qUser = QUser.user;
         BooleanExpression predicate = qUser.isNotNull();
