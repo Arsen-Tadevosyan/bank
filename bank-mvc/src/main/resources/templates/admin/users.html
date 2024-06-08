@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <!-- metas -->
+    <meta charset="utf-8">
+    <meta name="author" content="Chitrakoot Web">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="Banking and Loan Responsive Template">
+    <meta name="description" content="Loan- Banking and Loan Responsive Template">
+
+    <!-- title  -->
+    <title>Credit List</title>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="img/logos/favicon.png">
+    <link rel="apple-touch-icon" href="img/logos/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/logos/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/logos/apple-touch-icon-114x114.png">
+
+    <!-- plugins -->
+    <link rel="stylesheet" href="/css/plugins.css">
+
+    <!-- search css -->
+    <link rel="stylesheet" href="/search/search.css">
+
+    <!-- quform css -->
+    <link rel="stylesheet" href="/quform/css/base.css">
+
+    <!-- theme core css -->
+    <link href="/css/styles.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- PAGE LOADING -->
+<div id="preloader"></div>
+
+<!-- MAIN WRAPPER -->
+<div class="main-wrapper">
+
+    <!-- HEADER -->
+    <th:block th:include="/admin/fragment/headerFragment::adminInfo"/>
+
+    <!-- PAGE TITLE -->
+
+    <!-- TABLES -->
+    <section>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+
+                    <div class="position-relative elements-block">
+
+                        <div class="inner-title">
+                            <div class="main-title title-left mb-0">Filter
+                                <span class="line-left"></span>
+                            </div>
+                        </div>
+                        <!-- FILTER FORM -->
+                        <!-- FILTER FORM -->
+                        <form id="filterForm" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                            <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                                <div style="flex: 1; margin-right: 10px; margin-bottom: 10px;">
+                                    <label for="name">Name:</label>
+                                    <input type="text" id="name" name="name" step="1">
+                                </div>
+                                <div style="flex: 1; margin-right: 10px; margin-bottom: 10px;">
+                                    <label for="surname">Surname:</label>
+                                    <input type="text" id="surname" name="surname" step="1">
+                                </div>
+                                <div style="flex: 1; margin-right: 10px; margin-bottom: 10px;">
+                                    <label for="email">Email:</label>
+                                    <input type="email" id="email" name="email" step="1">
+                                </div>
+                                <div style="flex: 1; margin-right: 10px; margin-bottom: 10px;">
+                                    <label for="minRating">Min Rating:</label>
+                                    <input type="number" id="minRating" name="minRating" step="1"  value="-1">
+                                </div>
+                                <div style="flex: 1; margin-right: 10px; margin-bottom: 10px;">
+                                    <label for="maxRating">Max Rating:</label>
+                                    <input type="number" id="maxRating" name="maxRating" step="1" value="5">
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- TRANSACTION TABLE -->
+                        <div id="userTable" class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Name</th>
+                                    <th>Surname</th>
+                                    <th>Email</th>
+                                    <th>Rating</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <ul id="pagination" class="pagination"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer1 bg-img cover-background" data-overlay-dark="8" data-background="img/bg/footer-bg.jpg">
+        <!-- Footer content goes here -->
+    </footer>
+
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/core.min.js"></script>
+<script src="/search/search.js"></script>
+<script src="/quform/js/plugins.js"></script>
+<script src="/quform/js/scripts.js"></script>
+<script src="/js/main.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var currentPage = 0;
+        var totalPages = 0;
+
+        function updateUserTable(page) {
+            $.ajax({
+                url: '/filterUsers?page=' + page,
+                type: 'GET',
+                data: $('#filterForm').serialize(),
+                success: function (response) {
+                    var tbody = $('#userTable tbody');
+                    tbody.empty();
+                    $.each(response.content, function (index, user) {
+                        tbody.append('<tr><td>' + user.id + '</td><td>' + user.name + '</td><td>' + user.surname + '</td><td>' + user.email + '</td><td>' + user.rating + '</td></tr>');
+                    });
+                    totalPages = response.totalPages;
+                    currentPage = page;
+                    updatePagination();
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function updatePagination() {
+            var pagination = $('#pagination');
+            pagination.empty();
+            for (var i = 0; i < totalPages; i++) {
+                var liClass = i === currentPage ? 'active' : '';
+                pagination.append('<li class="page-item ' + liClass + '"><a class="page-link" href="#">' + (i + 1) + '</a></li>'); // Add 1 to i for display (1-based)
+            }
+        }
+
+        $('#filterForm input').on('input', function () {
+            updateUserTable(0);
+        });
+
+        $('#pagination').on('click', 'li.page-item:not(.disabled) a.page-link', function (e) {
+            e.preventDefault();
+            var page = $(this).text();
+            if (!isNaN(page)) {
+                updateUserTable(parseInt(page) - 1);
+            }
+        });
+
+        updateUserTable(0);
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Chitrakoot Web">
+    <meta name="keywords" content="Banking and Loan Responsive Template">
+    <meta name="description" content="Loan- Banking and Loan Responsive Template">
+
+    <!-- Page title -->
+    <title>Loan- Banking and Loan Responsive Template</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="img/logos/favicon.png">
+    <link rel="apple-touch-icon" href="img/logos/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/logos/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/logos/apple-touch-icon-114x114.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/plugins.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/search/search.css">
+    <link rel="stylesheet" href="/quform/css/base.css">
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+<!-- Page loading animation -->
+<div id="preloader"></div>
+
+<!-- Main wrapper -->
+<div class="main-wrapper">
+    <!-- Header section -->
+    <th:block th:include="/user/fragment/headerFragment::userInfo"/>
+
+    <!-- Page title section -->
+    <section class="page-title-section top-position1 bg-img cover-background" data-overlay-dark="55"
+             data-background="img/bg/page-title.jpg">
+        <!-- Content goes here if any -->
+    </section>
+
+    <!-- Verification form section -->
+    <section>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="position-relative elements-block">
+                        <div class="inner-title">
+                            <div class="main-title title-left mb-0">Verification
+                                <span class="line-left"></span>
+                            </div>
+                        </div>
+                        <h2 style="color: orange; text-align: center; margin-bottom: 20px;">Input Verification Number</h2>
+                        <span style="color: red; text-align: center; display: block; font-size: 20px;" th:if="${msg != null}"
+                              th:text="${msg}"></span>
+                        <form action="/user/verification" method="post" style="text-align: center;">
+                            <input type="number" name="token" placeholder="Enter verification code" style="padding: 10px; margin-bottom: 20px; width: 300px; border: 1px solid #ccc; border-radius: 5px;" required>
+                            <button type="submit" name="submit" class="btn btn-primary" style="padding: 10px 20px; background-color: #ff9e2b; color: #001833; border: none; border-radius: 5px; cursor: pointer;">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- JavaScript -->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/core.min.js"></script>
+<script src="/search/search.js"></script>
+<script src="/js/main.js"></script>
+<script src="/quform/js/plugins.js"></script>
+<script src="/quform/js/scripts.js"></script>
+</body>
+
+</html>

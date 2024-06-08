@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <!-- metas -->
+    <meta charset="utf-8">
+    <meta name="author" content="Chitrakoot Web">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="Banking and Loan Responsive Template">
+    <meta name="description" content="Loan- Banking and Loan Responsive Template">
+
+    <!-- title  -->
+    <title>Loan- Banking </title>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="img/logos/favicon.png">
+    <link rel="apple-touch-icon" href="img/logos/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/logos/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/logos/apple-touch-icon-114x114.png">
+
+    <!-- plugins -->
+    <link rel="stylesheet" href="css/plugins.css">
+
+    <!-- search css -->
+    <link rel="stylesheet" href="search/search.css">
+
+    <!-- quform css -->
+    <link rel="stylesheet" href="quform/css/base.css">
+
+    <!-- theme core css -->
+    <link href="css/styles.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- PAGE LOADING
+================================================== -->
+<div id="preloader"></div>
+
+<!-- MAIN WRAPPER
+================================================== -->
+<div class="main-wrapper">
+
+
+    <th:block th:include="/admin/fragment/headerFragment::adminInfo"/>
+    <!-- BANNER
+    ================================================== -->
+    <section class="bg-img cover-background full-screen top-position1 p-0" data-overlay-dark="2"
+             data-background="img/about/img_2.png">
+
+        <div class="container d-flex flex-column">
+            <div class="row align-items-center min-vh-100">
+
+                <div class="row mt-n1-9">
+                    <div class="col-sm-6 col-lg-3 mt-1-9">
+                        <div class="text-center">
+                            <h3 class="text-white h1 countup" th:text="${transactionsCount}"></h3>
+                            <span class="text-white">Transactions with Us</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3 mt-1-9">
+                        <div class="text-center">
+                            <h3 class="text-white h1"><span class="countup" th:text="${totalUsers}"></span></h3>
+                            <span class="text-white">Total Users</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3 mt-1-9">
+                        <div class="text-center">
+                            <h3 class="text-white h1"><span class="countup">13</span>%</h3>
+                            <span class="text-white">Personal Credit Rate</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3 mt-1-9">
+                        <div class="text-center">
+                            <h3 class="text-white h1"><span class="countup">100</span>%</h3>
+                            <span class="text-white">Happy Clients</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- SERVICES
+    ================================================== -->
+
+    <section class="loan-app-form bg-img cover-background" data-background="img\content\carousel3.jpg">
+        <div class="container">
+            <div class="col-md-6">
+                <div class="mb-1-9">
+                    <h2 class="w-md-90">Get up to $15,000 fast Easy cash loan application</h2>
+                    <div class="main-title title-left">Loan Calculator<span class="line-left"></span></div>
+                </div>
+            </div>
+            <div class="row calculator-loan">
+                <div class="col-md-6 form mb-1-6 mb-md-0">
+                    <div class="accrue-field-amount"><p><label>Loan Amount:</label><input type="text" class="amount"
+                                                                                          value="7,500"></p></div>
+                    <div class="accrue-field-rate"><p><label>Rate (APR):</label><input type="text" class="rate"
+                                                                                       value="7%"></p></div>
+                    <div class="accrue-field-term"><p><label>Term:</label><input type="text" class="term"
+                                                                                 value="36m"><small>Format: 12m, 36m,
+                        3y, 7y</small></p></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="ms-xl-5 p-4 p-xl-5 bg-primary text-white rounded">
+                        <label class="results-label">Results:</label>
+                        <div class="results"><p><strong>Monthly Payment:</strong><br>$8,378.54</p>
+                            <p><strong>Number of Payments:</strong><br>12</p>
+                            <p><strong>Total Payments:</strong><br>$100,542.49</p>
+                            <p><strong>Total Interest:</strong><br>$542.49</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- GETTING A LOAN
+    ================================================== -->
+
+
+    <!-- FOOTER
+    ================================================== -->
+
+
+</div>
+
+<!-- start scroll to top -->
+<a href="#!" class="scroll-to-top"><i class="fas fa-angle-up" aria-hidden="true"></i></a>
+<!-- end scroll to top -->
+
+<!-- all js include start -->
+
+<!-- jQuery -->
+<script src="js/jquery.min.js"></script>
+
+<!-- popper js -->
+<script src="js/popper.min.js"></script>
+
+<!-- bootstrap -->
+<script src="js/bootstrap.min.js"></script>
+
+<!-- jquery -->
+<script src="js/core.min.js"></script>
+
+<!-- Search -->
+<script src="search/search.js"></script>
+
+<!-- custom scripts -->
+<script src="js/main.js"></script>
+
+<!-- form plugins js -->
+<script src="quform/js/plugins.js"></script>
+
+<!-- form scripts js -->
+<script src="quform/js/scripts.js"></script>
+<script>
+    $(document).ready(function () {
+
+        function calculateLoan() {
+
+            var loanAmount = parseFloat($('.amount').val().replace(',', ''));
+            var annualInterestRate = parseFloat($('.rate').val()) / 100;
+            var loanTerm = $('.term').val();
+
+
+            var monthlyInterestRate = annualInterestRate / 12;
+
+
+            var numberOfPayments;
+            if (loanTerm.endsWith('m')) {
+                numberOfPayments = parseInt(loanTerm);
+            } else if (loanTerm.endsWith('y')) {
+                numberOfPayments = parseInt(loanTerm) * 12;
+            }
+
+
+            var monthlyPayment = loanAmount * monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
+
+
+            var totalPayments = monthlyPayment * numberOfPayments;
+            var totalInterest = totalPayments - loanAmount;
+
+
+            $('.results').html(
+                '<p><strong>Monthly Payment:</strong><br>$' + monthlyPayment.toFixed(2) + '</p>' +
+                '<p><strong>Number of Payments:</strong><br>' + numberOfPayments + '</p>' +
+                '<p><strong>Total Payments:</strong><br>$' + totalPayments.toFixed(2) + '</p>' +
+                '<p><strong>Total Interest:</strong><br>$' + totalInterest.toFixed(2) + '</p>'
+            );
+        }
+
+        calculateLoan();
+
+
+        $('.amount, .rate, .term').on('input', function () {
+            calculateLoan();
+        });
+    });
+
+</script>
+
+</body>
+
+</html>
