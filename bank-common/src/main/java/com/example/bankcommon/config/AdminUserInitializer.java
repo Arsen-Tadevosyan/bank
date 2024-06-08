@@ -39,4 +39,5 @@ public class AdminUserInitializer {
             log.info("Admin user already exists.");
         }
     }
+
 }
