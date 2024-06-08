@@ -3,11 +3,17 @@ package com.example.bankcommon.entity;
 import com.example.bankcommon.entity.enums.Gender;
 import com.example.bankcommon.entity.enums.UserRole;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
