@@ -32,9 +32,3 @@ servlet:
   multipart:
     max-file-size: 5MB
     max-request-size: 5MB
-picture:
-  upload:
-    directory: C:\\Users\\User\\IdeaProjects\\bank\\pictures
-contract:
-  upload:
-    directory: C:\\Users\\User\\IdeaProjects\\bank\\contract

@@ -1,6 +1,11 @@
 spring:
   application:
     name: bank-common
+  task:
+    scheduling:
+      pool:
+        size: 10
+      thread-name-prefix: schedule-task-
   datasource:
     url: jdbc:mysql://localhost:3306/bank
     username: root
@@ -25,7 +30,7 @@ logging:
   level:
     root: info
   file:
-    name: C:\\Users\\User\\IdeaProjects\\bank\\logs\\bank-%d{yyyy-MM-dd-HH-mm-ss}.%i.log
+    name: ./logs//bank-%d{yyyy-MM-dd-HH-mm-ss}.%i.log
   logback:
     rollingpolicy:
       max-file-size: 13MB

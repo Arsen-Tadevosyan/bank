@@ -57,7 +57,7 @@
                     <p class="w-sm-80 w-lg-60 mx-auto mb-4">This page is incidentally inaccessible because of support. We will back very before long much obliged for your understanding</p>
                     <div>
                         <a href="/" class="butn my-1 mx-1">Return Home</a>
-                        <a href="/messages" class="butn primary secondary-hover my-1 mx-1">Contact Us</a>
+                        <a href="/messages" class="butn primary secondary-hover my-1 mx-1" th:if="${currentUser!=null}">Contact Us</a>
                     </div>
                 </div>
             </div>
